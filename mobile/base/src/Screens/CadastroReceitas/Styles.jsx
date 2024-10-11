@@ -3,57 +3,72 @@ import { StyleSheet } from 'react-native';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#FFFFFF',
   },
-  cadastroContainer: {
-    margin: 10,
-  },
-  input: {
-    width: 100,
+  headerComponentContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   headerIconsContainer: {
-    width: 50,
     flexDirection: 'row',
-    position: 'absolute',
-    top: 10,
-    left: 50,
+    alignItems: 'center',
   },
-    newsCard: {
-    marginBottom: 6,
+  section: {
+    padding: 20,
+  },
+  newsCard: {
+    borderRadius: 10,
+    overflow: 'hidden',
+    marginBottom: 20,
   },
   newsImage: {
-    margin: 10,
-    width: '98%',
-    height: 120,
+    width: '100%',
+    height: 100,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  input: {
-    padding: 10,
-    height: 100,
-    borderColor: '#FFA92C',
-    borderWidth: 2, 
-    borderRadius: 20,
-    margin: 10,
-    fontWeight: 'bold',
-  },
-  receitaButton: {
-    backgroundColor: '#FFA92C',
+  cadastroContainer: {
+    padding: 20,
     borderRadius: 10,
-  },
-  buttonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-  },
-  buttonContainer: {
-    alignItems: 'center',
+    backgroundColor: '#fff',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
   },
   title: {
-    margin: 10,
     fontSize: 20,
     fontWeight: 'bold',
-    color: "#FFA92C"
+    marginBottom: 10,
+    color: '#FFA92C',
   },
- 
+  input: {
+    height: 50,
+    borderColor: '#FFA92C',
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingLeft: 10,
+    marginBottom: 15,
+    backgroundColor: '#FFFFFF',
+  },
+  buttonContainer: {
+    marginTop: 15,
+    alignItems: 'center',
+  },
+  receitaButton: {
+    width: '100%',
+    
+    borderRadius: 10,
+    backgroundColor: '#FFA92C',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
 });
 
 export default styles;

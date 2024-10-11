@@ -146,10 +146,10 @@ const userModel = {
         return result
     },
     
-    CreateReceita: async (nome, ingredientes, modo_preparo) => {
+    CreateReceita: async (nome, ingredientes, modo_preparo, imagemBase64) => {
         const result = await connection.query(
-          'INSERT INTO receitascadastradas (nome, ingredientes, modo_preparo) VALUES (?, ?, ?)',
-          [nome, ingredientes, modo_preparo]
+          'INSERT INTO receitascadastradas (nome, ingredientes, modo_preparo, imagemReceita) VALUES (?, ?, ?, ?)',
+          [nome, ingredientes, modo_preparo, imagemBase64]
         );
         return result;
       },

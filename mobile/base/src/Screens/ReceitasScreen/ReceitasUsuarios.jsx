@@ -92,7 +92,7 @@ const ReceitasUsuario = () => {
     <View style={styles.item}>
       <View style={styles.card}>
         <TouchableOpacity onPress={() => handleVizualizar(item.id)}>
-          <Image source={require("../../../res/img/purê.png")} style={styles.image} />
+          <Image source={{uri: `data:image/jpeg;base64,${item.imagemReceita}`}} style={styles.image} />
           <View style={styles.content}>
             <Text style={styles.title}>{item.title}</Text>
           </View>

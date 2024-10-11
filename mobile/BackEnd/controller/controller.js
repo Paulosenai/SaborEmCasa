@@ -323,9 +323,9 @@ const userController = {
     },
     CadastrarReceita: async (req, res) => {
         try {
-          const { nome, ingredientes, modo_preparo, image_uri } = req.body;
+          const { nome, ingredientes, modo_preparo, imagemBase64 } = req.body;
                
-          await clientController.CreateReceita(nome, ingredientes, modo_preparo, image_uri);
+          await clientController.CreateReceita(nome, ingredientes, modo_preparo, imagemBase64);
           res.status(201).json({ message: 'Receita cadastrada com sucesso!' });
 
         } catch (error) {
