@@ -170,9 +170,28 @@ const userController = {
             res.status(500).json({ error: "Erro ao obter a lista de receitas" })
         }
     },
-    listReceitasPriv: async (req, res) => {
+    listReceitasUser: async (req, res) => {
         try {
-            const clients = await clientController.getAllReceitasPriv();
+            const clients = await clientController.getAllReceitasUser(req.params.id_usuario);
+            res.status(200).json(clients);
+        }
+        catch (error) {
+            res.status(500).json({ error: "Erro ao obter a lista de receitas" })
+        }
+    },
+    listReceitasPub: async (req, res) => {
+        try {
+            const clients = await clientController.getAllReceitasPub();
+            res.status(200).json(clients);
+        }
+        catch (error) {
+            res.status(500).json({ error: "Erro ao obter a lista de receitas" })
+        }
+    },
+
+    listReceitasByCategoria: async (req, res) => {
+        try {
+            const clients = await clientController.getReceitasCategoria(req.params.categoria);
             res.status(200).json(clients);
         }
         catch (error) {
@@ -181,9 +200,9 @@ const userController = {
     },
     CadastrarReceita: async (req, res) => {
         try {
-          const { id, nome, ingredientes, modo_preparo, imagemReceita, id_usuario, privacidade, categoria } = req.body;
+          const { id, nome, ingredientes, modo_preparo, imagemBase64, id_usuario, privacidade, categoria } = req.body;
                
-          await clientController.CreateReceita(id, nome, ingredientes, modo_preparo, imagemReceita, id_usuario, privacidade, categoria);
+          await clientController.CreateReceita(id, nome, ingredientes, modo_preparo, imagemBase64, id_usuario, privacidade, categoria);
           res.status(201).json({ message: 'Receita cadastrada com sucesso!' });
 
         } catch (error) {

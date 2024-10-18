@@ -5,6 +5,7 @@ import { Text, Header } from '@rneui/themed';
 import styles from "./Style";
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
+import { ActivityIndicator } from "react-native-paper";
 
 const Sidebar = ({ isOpen, onClose }) => {
   const [translateX] = useState(new Animated.Value(300));
@@ -41,27 +42,33 @@ const Sidebar = ({ isOpen, onClose }) => {
   );
 };
 
-const ReceitasUsuario = () => {
+const ReceitasUsuario = ({route}) => {
   const navigation = useNavigation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchVisible, setIsSearchVisible] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(true);
+  const id_usuario = route.params.obj.id
+  console.log(id_usuario)
   const fetchData = useCallback(async () => {
     try {
-      const response = await axios.get('http://10.0.2.2:8085/api/receitasCadastradas');
+      const response = await axios.get(`http://10.0.2.2:8085/api/readReceitaUser/${id_usuario}`);
       const sortedData = response.data.sort((a, b) => a.id - b.id);
       setData(sortedData);
       setFilteredData(sortedData);
     } catch (error) {
       console.error(error);
     }
-  }, []);
+  },[]);
 
   useEffect(() => {
-    fetchData();
+    const interval = setInterval(()=> {
+      fetchData();
+      setIsLoading(false)
+    }, 1500)
+    
   }, [fetchData]);
 
   const toggleSidebar = () => setIsSidebarOpen(prev => !prev);
@@ -94,7 +101,7 @@ const ReceitasUsuario = () => {
         <TouchableOpacity onPress={() => handleVizualizar(item.id)}>
           <Image source={{uri: `data:image/jpeg;base64,${item.imagemReceita}`}} style={styles.image} />
           <View style={styles.content}>
-            <Text style={styles.title}>{item.title}</Text>
+            <Text style={styles.title}>{item.nome}</Text>
           </View>
         </TouchableOpacity>
       </View>
@@ -150,14 +157,20 @@ const ReceitasUsuario = () => {
           </View>
         </View>
 
-        <FlatList
+        {isLoading ? (
+                <ActivityIndicator style={{alignSelf: 'center', width: 150, height: '400'}} color="orange" /> 
+              ) : (
+                <FlatList
           data={filteredData}
           renderItem={renderItem}
+          extraData={filteredData}
           keyExtractor={item => String(item.id)}
           numColumns={2}
           columnWrapperStyle={styles.row}
           scrollEnabled={false}
         />
+              )}
+        
       </ScrollView>
     </SafeAreaView>
   );

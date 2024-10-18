@@ -6,10 +6,13 @@ import styles from "./Styles";
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ActivityIndicator } from "react-native-paper";
 
-const Sidebar = ({ isOpen, onClose, userData }) => {
+// Componente Sidebar
+const Sidebar = ({ isOpen, onClose }) => {
   const [translateX] = useState(new Animated.Value(300));
   const navigation = useNavigation();
+  const [userName, setUserName] = useState('');
 
   useEffect(() => {
     Animated.timing(translateX, {
@@ -18,6 +21,22 @@ const Sidebar = ({ isOpen, onClose, userData }) => {
       useNativeDriver: true,
     }).start();
   }, [isOpen]);
+
+  const loadUserName = async () => {
+    try {
+      const userData = await AsyncStorage.getItem('userData');
+      if (userData) {
+        const { name } = JSON.parse(userData);
+        setUserName(name || 'Usuário');
+      }
+    } catch (error) {
+      console.error('Erro ao carregar o nome do usuário:', error);
+    }
+  };
+
+  useEffect(() => {
+    loadUserName();
+  }, []);
 
   const navigateToScreen = (screenName) => {
     navigation.navigate(screenName);
@@ -41,30 +60,22 @@ const Sidebar = ({ isOpen, onClose, userData }) => {
       </TouchableOpacity>
 
       <View style={styles.sidebarContent}>
-        {userData ? (
-          <>
-            <Text style={styles.sidebarTitle}>Bem-vindo, {userData.name}!</Text>
-            <Text style={styles.sidebarEmail}>{userData.email}</Text>
-          </>
-        ) : (
-          <>
-            <TouchableOpacity style={styles.sidebarItem} onPress={handleLogout}>
-              <Text style={styles.sidebarItemText}>Logout</Text>
-            </TouchableOpacity>
-            <Text style={styles.sidebarTitle}>Login</Text>
-            <TouchableOpacity style={styles.sidebarItem} onPress={() => navigateToScreen('LoginScreen')}>
-              <Text style={styles.sidebarItemText}>Login</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.sidebarItem} onPress={() => navigateToScreen('RegisterScreen')}>
-              <Text style={styles.sidebarItemText}>Registrar</Text>
-            </TouchableOpacity>
-          </>
-        )}
+        <Text style={styles.sidebarTitle}>Bem-vindo, {userName}</Text>
+        <TouchableOpacity style={styles.sidebarItem} onPress={handleLogout}>
+          <Text style={styles.sidebarItemText}>Logout</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.sidebarItem} onPress={() => navigateToScreen('LoginScreen')}>
+          <Text style={styles.sidebarItemText}>Login</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.sidebarItem} onPress={() => navigateToScreen('RegisterScreen')}>
+          <Text style={styles.sidebarItemText}>Registrar</Text>
+        </TouchableOpacity>
       </View>
     </Animated.View>
   );
 };
 
+// Componente Home
 function Home({ route }) {
   const navigation = useNavigation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -73,6 +84,7 @@ function Home({ route }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [favoritedItems, setFavoritedItems] = useState(new Set());
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const loadFavorites = async () => {
@@ -89,20 +101,21 @@ function Home({ route }) {
     loadFavorites();
   }, []);
 
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
-
   const fetchData = useCallback(async () => {
     try {
-      const response = await axios.get('http://10.0.2.2:8085/api/readNews');
+      const response = await axios.get('http://10.0.2.2:8085/api/readReceitaPub');
       const sortedData = response.data.sort((a, b) => a.id - b.id);
       setData(sortedData);
       setFilteredData(sortedData);
+      setIsLoading(false); // Mova esta linha para evitar que o carregamento fique ativo após a busca inicial.
     } catch (error) {
       console.error(error);
     }
   }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const toggleSidebar = () => setIsSidebarOpen(prev => !prev);
   const closeSidebar = () => setIsSidebarOpen(false);
@@ -120,7 +133,7 @@ function Home({ route }) {
     if (query === '') {
       setFilteredData(data);
     } else {
-      setFilteredData(data.filter(item => item.title.toLowerCase().includes(query.toLowerCase())));
+      setFilteredData(data.filter(item => item.nome.toLowerCase().includes(query.toLowerCase())));
     }
   }, [data]);
 
@@ -149,9 +162,9 @@ function Home({ route }) {
       <View style={styles.item}>
         <View style={styles.card}>
           <TouchableOpacity onPress={() => handleVizualizar(item.id)}>
-            <Image source={require("../../../res/img/sapocururu.jpg")} style={styles.image} />
+            <Image source={{ uri: `data:image/jpeg;base64,${item.imagemReceita}` }} style={styles.image} />
             <View style={styles.content}>
-              <Text style={styles.title}>{item.title}</Text>
+              <Text style={styles.title}>{item.nome}</Text>
               <TouchableOpacity onPress={() => handleFavoriteToggle(item.id)}>
                 <Icon
                   name={favoritedItems.has(item.id) ? 'favorite' : 'favorite-border'}
@@ -178,13 +191,13 @@ function Home({ route }) {
             </View>
           }
           centerComponent={isSearchVisible ? (
-              <TextInput
-                style={styles.searchInput}
-                placeholder="Pesquisar..."
-                placeholderTextColor={'#fff'}
-                value={searchQuery}
-                onChangeText={handleSearch}
-              />
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Pesquisar..."
+              placeholderTextColor={'#fff'}
+              value={searchQuery}
+              onChangeText={handleSearch}
+            />
           ) : null}
           rightComponent={(
             <View style={styles.headerIconsContainer}>
@@ -205,9 +218,9 @@ function Home({ route }) {
             </View>
           )}
         />
-        
+
         <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
-        
+
         <View style={styles.section}>
           <View style={styles.newsCard}>
             <ImageBackground
@@ -218,32 +231,37 @@ function Home({ route }) {
             </ImageBackground>
           </View>
           <View style={styles.categoria}>
-            <TouchableOpacity onPress={() => navigation.navigate('SalgadosScreen')}>
+            <TouchableOpacity onPress={() => navigation.navigate('SalgadosScreen', { categoria: 'salgado' })}>
               <Image source={require('../../../res/img/feijoada.png')} style={styles.imageCategoriaIcons} />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate('SaudavelScreen')}>
+            <TouchableOpacity onPress={() => navigation.navigate('SaudavelScreen', { categoria: 'saudavel' })}>
               <Image source={require('../../../res/img/salada.png')} style={styles.imageCategoriaIcons} />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate('DoceScreen')}>
+            <TouchableOpacity onPress={() => navigation.navigate('DoceScreen', { categoria: 'doce' })}>
               <Image source={require('../../../res/img/brigadeiro.png')} style={styles.imageCategoriaIcons} />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate('BebidaScreen')}>
+            <TouchableOpacity onPress={() => navigation.navigate('BebidaScreen', { categoria: 'bebida' })}>
               <Image source={require('../../../res/img/bebida.png')} style={styles.imageCategoriaIcons} />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate('SemAcucarScreen')}>
+            <TouchableOpacity onPress={() => navigation.navigate('SemAcucarScreen', { categoria: 'sem-acucar' })}>
               <Image source={require('../../../res/img/semdoces.png')} style={styles.imageCategoriaIcons} />
             </TouchableOpacity>
           </View>
         </View>
-        
-        <FlatList 
-          data={filteredData}
-          renderItem={renderItem}
-          keyExtractor={item => String(item.id)}
-          numColumns={2}
-          columnWrapperStyle={styles.row}
-          scrollEnabled={false}
-        />
+
+        {isLoading ? (
+          <ActivityIndicator style={{ alignSelf: 'center', width: 150, height: '600' }} color="orange" />
+        ) : (
+          <FlatList
+            data={filteredData}
+            renderItem={renderItem}
+            extraData={filteredData}
+            keyExtractor={item => String(item.id)}
+            numColumns={2}
+            columnWrapperStyle={styles.row}
+            scrollEnabled={false}
+          />
+        )}
       </ScrollView>
     </SafeAreaView>
   );

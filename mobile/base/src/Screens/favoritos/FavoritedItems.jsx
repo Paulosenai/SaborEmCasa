@@ -1,38 +1,48 @@
 import React, { useState, useEffect } from "react";
-import { View, FlatList, TouchableOpacity, Image, Text, SafeAreaView, StyleSheet } from 'react-native';
+import { View, FlatList, TouchableOpacity, Image, Text, SafeAreaView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import styles from "./Styles";
 
-const FAVORITE_API_URLS = [
-  'http://10.0.2.2:8085/api/readNews',
-  'http://10.0.2.2:8085/api/readNews/bebida', 
-  'http://10.0.2.2:8085/api/readNews/doce',
-  'http://10.0.2.2:8085/api/readNews/salgado',
-  'http://10.0.2.2:8085/api/readNews/saudavel', 
-  'http://10.0.2.2:8085/api/readNews/semacucar', 
-];
+const FAVORITE_API_URL = 'http://10.0.2.2:8085/api/readReceitaPub';
 
 const Favorites = () => {
+  const [recipes, setRecipes] = useState([]);
   const [favorites, setFavorites] = useState([]);
   const navigation = useNavigation();
 
-  useEffect(() => {
-    const loadFavorites = async () => {
-      try {
-        const favorited = await AsyncStorage.getItem('favoritedItems');
-        if (favorited) {
-          const favoritedIds = JSON.parse(favorited);
-          const allRecipes = await fetchAllRecipes();
-          const favoritedItems = allRecipes.filter(item => favoritedIds.includes(item.id));
-          setFavorites(favoritedItems);
-        }
-      } catch (error) {
-        console.error('Failed to load favorites:', error);
+  // Função para carregar receitas e favoritos
+  const loadRecipesAndFavorites = async () => {
+    try {
+      const allRecipes = await fetchAllRecipes();
+      setRecipes(allRecipes);
+      const favorited = await AsyncStorage.getItem('favoritedItems');
+      if (favorited) {
+        const favoritedIds = JSON.parse(favorited);
+        const favoritedItems = allRecipes.filter(item => favoritedIds.includes(item.id));
+        setFavorites(favoritedItems);
       }
-    };
+    } catch (error) {
+      console.error('Failed to load data:', error);
+    }
+  };
 
-    loadFavorites();
+  // Função para buscar todas as receitas
+  const fetchAllRecipes = async () => {
+    const response = await fetch(FAVORITE_API_URL);
+    return await response.json();
+  };
+
+  useEffect(() => {
+    loadRecipesAndFavorites(); // Carrega os dados inicialmente
+
+    // Define um intervalo para atualizar os dados a cada 1,5 segundos
+    const interval = setInterval(() => {
+      loadRecipesAndFavorites();
+    }, 1500);
+
+    // Limpa o intervalo quando o componente desmonta
+    return () => clearInterval(interval);
   }, []);
 
   const handleVizualizar = (id) => {
@@ -45,34 +55,28 @@ const Favorites = () => {
       const favoritedIds = favorited ? JSON.parse(favorited) : [];
 
       const updatedFavoritedIds = favoritedIds.includes(id)
-        ? favoritedIds.filter(favId => favId !== id)  
-        : [...favoritedIds, id]; 
+        ? favoritedIds.filter(favId => favId !== id)
+        : [...favoritedIds, id];
 
       await AsyncStorage.setItem('favoritedItems', JSON.stringify(updatedFavoritedIds));
-      const allRecipes = await fetchAllRecipes();  
-      const favoritedItems = allRecipes.filter(item => updatedFavoritedIds.includes(item.id));
-      setFavorites(favoritedItems);
+      
+      const updatedFavorites = recipes.filter(item => updatedFavoritedIds.includes(item.id));
+      setFavorites(updatedFavorites);
     } catch (error) {
       console.error('Failed to update favorites:', error);
     }
-  };
-
-  const fetchAllRecipes = async () => {
-    const promises = FAVORITE_API_URLS.map(url => fetch(url).then(response => response.json()));
-    const results = await Promise.all(promises);
-    return results.flat();
   };
 
   const renderItem = ({ item }) => (
     <View style={styles.item}>
       <View style={styles.card}>
         <TouchableOpacity onPress={() => handleVizualizar(item.id)}>
-          <Image source={require("../../../res/img/purê.png")} style={styles.image} />
+          <Image source={{ uri: `data:image/jpeg;base64,${item.imagemReceita}` }} style={styles.image} />
           <View style={styles.content}>
-            <Text style={styles.title}>{item.title}</Text>
+            <Text style={styles.title}>{item.nome}</Text>
             <TouchableOpacity onPress={() => handleFavoriteToggle(item.id)}>
               <Text style={styles.favoriteButton}>
-                {favorites.some(favItem => favItem.id === item.id) ? 'Tirar dos favoritos' : 'Favorite'}
+                {favorites.some(favItem => favItem.id === item.id) ? 'Tirar dos favoritos' : 'Favoritar'}
               </Text>
             </TouchableOpacity>
           </View>
@@ -91,13 +95,9 @@ const Favorites = () => {
         renderItem={renderItem}
         keyExtractor={item => String(item.id)}
         numColumns={2}
-        extraData={favorites}
-        columnWrapperStyle={styles.row}
       />
     </SafeAreaView>
   );
 };
-
-
 
 export default Favorites;

@@ -41,7 +41,7 @@ const Sidebar = ({ isOpen, onClose }) => {
   );
 };
 
-const Home = () => {
+const Contato = () => {
   const navigation = useNavigation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [data, setData] = useState([]);
@@ -126,4 +126,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Contato;

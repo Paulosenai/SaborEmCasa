@@ -77,32 +77,42 @@ const userModel = {
             .catch(erro => console.log(erro));
         return result
     },
-    getAllReceitasPub: async () => {
-        const [result] = await connection.query("SELECT * FROM receitas WHERE privacidade = 'Público' ")
+    getReceitasCategoria: async (categoria) => {
+        const [result] = await connection.query("SELECT * FROM receitascadastradas WHERE categoria = ?", [categoria])
             .catch(erro => console.log(erro));
         return result
     },
-    getAllReceitasPriv: async () => {
-        const [result] = await connection.query("SELECT * FROM receitascadastradas WHERE privacidade = 'Privado'")
+    getAllReceitasPub: async () => {
+        const [result] = await connection.query("SELECT * FROM receitascadastradas WHERE privacidade = 'publico' ")
             .catch(erro => console.log(erro));
         return result
     },
     getAllReceitasUser: async (id_usuario) => {
-        const [result] = await connection.query("SELECT * FROM receitas WHERE id_usuario = ?", [id_usuario])
+        const [result] = await connection.query("SELECT * FROM receitascadastradas WHERE id_usuario = ?", [id_usuario])
             .catch(erro => console.log(erro));
         return result
     },
 
     getReceitasById: async (id) => {
-        const [result] = await connection.query("SELECT * FROM receitasCadastradas WHERE id =?", [id])
-            .catch(erro => console.log(erro));
-        return result
+        try {
+            const [result] = await connection.query("SELECT * FROM receitasCadastradas WHERE id = ?", [id]);
+            console.log('Result: ', result);
+    
+            if (result.length === 0) {
+                console.log(`Nenhuma receita encontrada com o ID: ${id}`);
+                return null; 
+            }
+            
+            return result[0]; 
+        } catch (erro) {
+            console.error('Erro ao buscar receita por ID:', erro);
+            throw erro; 
+        }
     },
     
-    CreateReceita: async (id, nome, ingredientes, modo_preparo, imagemReceita, id_usuario, privacidade, categoria) => {
+    CreateReceita: async (id, nome, ingredientes, modo_preparo, imagemBase64, id_usuario, privacidade, categoria) => {
         const result = await connection.query(
-          'INSERT INTO receitascadastradas (id, nome, ingredientes, modo_preparo, imagemReceita, id_usuario, privacidade, categoria) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-          [id, nome, ingredientes, modo_preparo, imagemReceita, id_usuario, privacidade, categoria]
+          'INSERT INTO receitascadastradas (id, nome, ingredientes, modo_preparo, imagemReceita, id_usuario, privacidade, categoria) VALUES(?, ?, ?, ?, ?, ?, ?, ?)', [id, nome, ingredientes, modo_preparo, imagemBase64, id_usuario, privacidade, categoria]
         );
         return result;
       },

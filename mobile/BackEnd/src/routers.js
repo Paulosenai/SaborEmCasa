@@ -14,7 +14,9 @@ router.post("/api/resetpassword", clientController.resetPassword);//resetar a se
 router.post('/api/cadastrarReceitas', clientController.CadastrarReceita);
 router.get("/api/readReceitas/",clientController.listAllReceitas);
 router.get("/api/readReceitas/:id",clientController.listReceitasById);
-router.get("/api/readReceitaPriv",clientController.listReceitasPriv);
+router.get("/api/readReceitaUser/:id_usuario",clientController.listReceitasUser);
+router.get("/api/readReceitaPub",clientController.listReceitasPub);
+router.get("/api/readReceitaCategoria/:categoria",clientController.listReceitasByCategoria);
 
 
 

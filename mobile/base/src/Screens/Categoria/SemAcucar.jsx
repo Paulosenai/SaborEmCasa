@@ -7,17 +7,20 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/MaterialIcons'; 
 import styles from "./Styles";
 
-export default function Home() {
+export default function Semacucar({route}) {
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [isScrolling, setIsScrolling] = useState(false); 
   const navigation = useNavigation();
   const [favoritedItems, setFavoritedItems] = useState(new Set());
 
+  const categoria = route.params.categoria
+
   useEffect(() => {
-    axios.get('http://10.0.2.2:8085/api/readNews/SemAcucar/')
+    axios.get(`http://10.0.2.2:8085/api/readReceitaCategoria/${categoria}`)
       .then(response => {
         const sortData = response.data.sort((a, b) => a.id - b.id);
+        console.log(response.data)
         setData(sortData);
         setFilteredData(sortData);
       })
@@ -52,20 +55,8 @@ export default function Home() {
     loadFavorites();
   }, []);
 
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
 
-  const fetchData = useCallback(async () => {
-    try {
-      const response = await axios.get('http://10.0.2.2:8085/api/readNews/semacucar');
-      const sortedData = response.data.sort((a, b) => a.id - b.id);
-      setData(sortedData);
-      setFilteredData(sortedData);
-    } catch (error) {
-      console.error(error);
-    }
-  }, []);
+
 
   const handleFavoriteToggle = async (itemId) => {
     const updatedFavorites = new Set(favoritedItems);
@@ -88,9 +79,9 @@ export default function Home() {
     <View style={styles.item}>
       <View style={styles.card}>
         <TouchableOpacity onPress={() => handleVizualizar(item.id)}>
-          <Image source={require("../../../res/img/purê.png")} style={styles.image} />
+        <Image source={{uri: `data:image/jpeg;base64,${item.imagemReceita}`}} style={styles.image} />
           <View style={styles.content}>
-            <Text style={styles.title}>{item.title}</Text>
+            <Text style={styles.title}>Receita: {item.nome}</Text>
             <TouchableOpacity onPress={() => handleFavoriteToggle(item.id)}>
               <Icon
                 name={favoritedItems.has(item.id) ? 'favorite' : 'favorite-border'}
@@ -137,6 +128,7 @@ export default function Home() {
           keyExtractor={item => String(item.id)}
           numColumns={2}
           columnWrapperStyle={styles.row}
+          scrollEnabled={false}
         />
       </ScrollView>
     </SafeAreaView>

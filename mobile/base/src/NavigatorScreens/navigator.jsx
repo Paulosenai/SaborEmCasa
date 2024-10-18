@@ -7,7 +7,7 @@ import BebidaScreen from '../Screens/Categoria/Bebida';
 import DoceScreen from '../Screens/Categoria/Doce';
 import SemAcucarScreen from '../Screens/Categoria/SemAcucar';
 import ReceitaCategorias from '../Screens/Categoria/ReceitaCategorias';
-import CadastrarReceitas from '../Screens/CadastroReceitas/CadastrarReceitas';
+
 import VisualizacaoReceitas from '../Screens/ReceitasScreen/VisualizacaoReceitas';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -36,7 +36,6 @@ export default function StartNavigator() {
           <Stack.Screen name="DoceScreen" component={DoceScreen} />
           <Stack.Screen name="SemAcucarScreen" component={SemAcucarScreen} />
           <Stack.Screen name="ReceitaCategorias" component={ReceitaCategorias} />
-          <Stack.Screen name="CadastrarReceitas" component={CadastrarReceitas} />
           <Stack.Screen name="VisualizaçãoReceitas" component={VisualizacaoReceitas} />
         </Stack.Navigator>
       </NavigationContainer>
