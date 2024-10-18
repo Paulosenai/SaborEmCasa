@@ -72,84 +72,37 @@ const userModel = {
         return result;
     },
 
-    getAllNews: async () => {
-        const [result] = await connection.query("SELECT * FROM receitas")
+    getAllReceitas: async () => {
+        const [result] = await connection.query("SELECT * FROM receitascadastradas ")
+            .catch(erro => console.log(erro));
+        return result
+    },
+    getAllReceitasPub: async () => {
+        const [result] = await connection.query("SELECT * FROM receitas WHERE privacidade = 'Público' ")
+            .catch(erro => console.log(erro));
+        return result
+    },
+    getAllReceitasPriv: async () => {
+        const [result] = await connection.query("SELECT * FROM receitascadastradas WHERE privacidade = 'Privado'")
+            .catch(erro => console.log(erro));
+        return result
+    },
+    getAllReceitasUser: async (id_usuario) => {
+        const [result] = await connection.query("SELECT * FROM receitas WHERE id_usuario = ?", [id_usuario])
             .catch(erro => console.log(erro));
         return result
     },
 
-    getByIdNews: async (id) => {
-        const [result] = await connection.query("SELECT * FROM receitas WHERE id =?", [id])
-            .catch(erro => console.log(erro));
-        return result
-    },
-    getAllNewsSalgado: async () => {
-        const [result] = await connection.query("SELECT * FROM salgado")
-            .catch(erro => console.log(erro));
-        return result
-    },
-
-    getByIdNewsSalgado: async (id) => {
-        const [result] = await connection.query("SELECT * FROM salgado WHERE id =?", [id])
-            .catch(erro => console.log(erro));
-        return result
-    },
-
-    getAllNewsSaudavel: async () => {
-        const [result] = await connection.query("SELECT * FROM saudavel")
-            .catch(erro => console.log(erro));
-        return result
-    },
-
-    getByIdNewsSaudavel: async (id) => {
-        const [result] = await connection.query("SELECT * FROM saudavel WHERE id =?", [id])
-            .catch(erro => console.log(erro));
-        return result
-    },
-
-    getAllNewsDoce: async () => {
-        const [result] = await connection.query("SELECT * FROM doce")
-            .catch(erro => console.log(erro));
-        return result
-    },
-
-
-    getByIdNewsDoce: async (id) => {
-        const [result] = await connection.query("SELECT * FROM doce WHERE id =?", [id])
-            .catch(erro => console.log(erro));
-        return result
-    },
-
-    getAllNewsBebida: async () => {
-        const [result] = await connection.query("SELECT * FROM bebida")
-            .catch(erro => console.log(erro));
-        return result
-    },
-
-
-    getByIdNewsBebida: async (id) => {
-        const [result] = await connection.query("SELECT * FROM bebida WHERE id =?", [id])
-            .catch(erro => console.log(erro));
-        return result
-    },
-
-    getAllNewsSemAcucar: async () => {
-        const [result] = await connection.query("SELECT * FROM semacucar")
-            .catch(erro => console.log(erro));
-        return result
-    },
-
-
-    getByIdNewsSemAcucar: async (id) => {
-        const [result] = await connection.query("SELECT * FROM semacucar WHERE id =?", [id])
+    getReceitasById: async (id) => {
+        const [result] = await connection.query("SELECT * FROM receitasCadastradas WHERE id =?", [id])
             .catch(erro => console.log(erro));
         return result
     },
     
-    CreateReceita: async (nome, ingredientes, modo_preparo, imagemBase64) => {
+    CreateReceita: async (id, nome, ingredientes, modo_preparo, imagemReceita, id_usuario, privacidade, categoria) => {
         const result = await connection.query(
-          'INSERT INTO receitascadastradas (nome, ingredientes, modo_preparo, imagemReceita) VALUES (?, ?, ?, ?)',
-          [nome, ingredientes, modo_preparo, imagemBase64]
+          'INSERT INTO receitascadastradas (id, nome, ingredientes, modo_preparo, imagemReceita, id_usuario, privacidade, categoria) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+          [id, nome, ingredientes, modo_preparo, imagemReceita, id_usuario, privacidade, categoria]
         );
         return result;
       },

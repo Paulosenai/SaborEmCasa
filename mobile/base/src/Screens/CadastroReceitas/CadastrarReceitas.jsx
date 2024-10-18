@@ -5,6 +5,7 @@ import RNFS from 'react-native-fs'
 import { Text, Header } from '@rneui/themed';
 import { Button } from 'galio-framework';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { SegmentedButtons } from 'react-native-paper';
 import axios from 'axios';
 import styles from './Styles';
 
@@ -13,27 +14,7 @@ export default function CadastrarReceitas({ navigation, route }) {
   const [ingredientes, setIngredientes] = useState('');
   const [modoPreparo, setModoPreparo] = useState('');
   const [imagem, setImagem] = useState(null);
-
-  const handleCameraLaunch = async () => {
-    const options = {
-        mediaType: 'photo',
-    };
-
-    try {
-        const response = await launchCamera(options);
-        console.log('pickedFile', response);
-
-        // Verifica se a imagem foi selecionada com sucesso
-        if (response.assets && response.assets.length > 0) {
-            const image = response.assets[0];
-            setImagem(image);
-        } else {
-            console.log('Nenhuma imagem selecionada.');
-        }
-    } catch (error) {
-        console.error('Erro ao selecionar a imagem:', error);
-    }
-};
+  const [value, setValue] = React.useState('');
 
   const handleImageLibraryLaunch = async () => {
     const options = {
@@ -57,7 +38,6 @@ export default function CadastrarReceitas({ navigation, route }) {
 };
 
   const handleSubmit = async () => {
-   
     // Verificar se todos os campos estão preenchidos
     if (!nome || !ingredientes || !modoPreparo) {
       Alert.alert('Campos obrigatórios', 'Por favor, preencha todos os campos.');
@@ -162,6 +142,22 @@ export default function CadastrarReceitas({ navigation, route }) {
             multiline 
             numberOfLines={4}
           />
+
+    <SegmentedButtons
+        value={value}
+        onValueChange={setValue}
+        buttons={[
+          {
+            value: 'walk',
+            label: 'Privado',
+          },
+          {
+            value: 'train',
+            label: 'Publico',
+          },
+          
+        ]}
+      />
           
           <View style={styles.buttonContainer}>
             <Button

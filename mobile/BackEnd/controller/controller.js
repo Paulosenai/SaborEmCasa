@@ -152,180 +152,38 @@ const userController = {
            res.status(500).json({msg:"Erro no servidor"})
         }
     },
-    listAllNews: async (req, res) => {
+    listAllReceitas: async (req, res) => {
         try {
-            const clients = await clientController.getAllNews();
+            const clients = await clientController.getAllReceitas();
             res.status(200).json(clients);
         }
         catch (error) {
             res.status(500).json({ error: "Erro ao obter a lista de receitas" })
         }
     },
-
-
-    listNewsbyID: async (req, res) => {
+    listReceitasById: async (req, res) => {
         try {
-            const sql = await clientController.getByIdNews(req.params.id);
-
-            if(sql.length> 0)
-            {
-                res.status(200).json(sql)
-            }
-            else{
-                res.status(401).json({msg:"Não existe registro no banco com este id"})
-            }
-        }
-        catch (error) {
-            res.status(500).json({ error: "Erro ao obter a lista de noticias" })
-        }
-    },
-    listAllNewsSalgado: async (req, res) => {
-        try {
-            const clients = await clientController.getAllNewsSalgado();
-            res.status(200).json(clients);
-            console.log(clients)
-        }
-        catch (error) {
-            res.status(500).json({ error: "Erro ao obter a lista de noticias" })
-        }
-    },
-
-
-    listNewsbyIDSalgado: async (req, res) => {
-        try {
-            const sql = await clientController.getByIdNewsSalgado(req.params.id);
-
-            if(sql.length> 0)
-            {
-                res.status(200).json(sql)
-            }
-            else{
-                res.status(401).json({msg:"Não existe registro no banco com este id"})
-            }
-        }
-        catch (error) {
-            res.status(500).json({ error: "Erro ao obter a lista de noticias" })
-        }
-    },
-
-    listAllNewsSaudavel: async (req, res) => {
-        try {
-            const clients = await clientController.getAllNewsSaudavel();
+            const clients = await clientController.getReceitasById(req.params.id);
             res.status(200).json(clients);
         }
         catch (error) {
-            res.status(500).json({ error: "Erro ao obter a lista de noticias" })
+            res.status(500).json({ error: "Erro ao obter a lista de receitas" })
         }
     },
-
-
-    listNewsbyIDSaudavel: async (req, res) => {
+    listReceitasPriv: async (req, res) => {
         try {
-            const sql = await clientController.getByIdNewsSaudavel(req.params.id);
-
-            if(sql.length> 0)
-            {
-                res.status(200).json(sql)
-            }
-            else{
-                res.status(401).json({msg:"Não existe registro no banco com este id"})
-            }
-        }
-        catch (error) {
-            res.status(500).json({ error: "Erro ao obter a lista de noticias" })
-        }
-    },
-
-    listAllNewsDoce: async (req, res) => {
-        try {
-            const clients = await clientController.getAllNewsDoce();
+            const clients = await clientController.getAllReceitasPriv();
             res.status(200).json(clients);
-            
         }
         catch (error) {
-            res.status(500).json({ error: "Erro ao obter a lista de noticias" })
-        }
-    },
-
-
-    listNewsbyIDDoce: async (req, res) => {
-        try {
-            const sql = await clientController.getByIdNewsDoce(req.params.id);
-
-            if(sql.length> 0)
-            {
-                res.status(200).json(sql)
-            }
-            else{
-                res.status(401).json({msg:"Não existe registro no banco com este id"})
-            }
-        }
-        catch (error) {
-            res.status(500).json({ error: "Erro ao obter a lista de noticias" })
-        }
-    },
-    listAllNewsBebida: async (req, res) => {
-        try {
-            const clients = await clientController.getAllNewsBebida();
-            res.status(200).json(clients);
-            
-        }
-        catch (error) {
-            res.status(500).json({ error: "Erro ao obter a lista de noticias" })
-        }
-    },
-
-
-    listNewsbyIDBebida: async (req, res) => {
-        try {
-            const sql = await clientController.getByIdNewsBebida(req.params.id);
-
-            if(sql.length> 0)
-            {
-                res.status(200).json(sql)
-            }
-            else{
-                res.status(401).json({msg:"Não existe registro no banco com este id"})
-            }
-        }
-        catch (error) {
-            res.status(500).json({ error: "Erro ao obter a lista de noticias" })
-        }
-    },
-
-    listAllNewsSemAcucar: async (req, res) => {
-        try {
-            const clients = await clientController.getAllNewsSemAcucar();
-            res.status(200).json(clients);
-            
-        }
-        catch (error) {
-            res.status(500).json({ error: "Erro ao obter a lista de noticias" })
-        }
-    },
-
-
-    listNewsbyIDSemAcucar: async (req, res) => {
-        try {
-            const sql = await clientController.getByIdNewsSemAcucar(req.params.id);
-
-            if(sql.length> 0)
-            {
-                res.status(200).json(sql)
-            }
-            else{
-                res.status(401).json({msg:"Não existe registro no banco com este id"})
-            }
-        }
-        catch (error) {
-            res.status(500).json({ error: "Erro ao obter a lista de noticias" })
+            res.status(500).json({ error: "Erro ao obter a lista de receitas" })
         }
     },
     CadastrarReceita: async (req, res) => {
         try {
-          const { nome, ingredientes, modo_preparo, imagemBase64 } = req.body;
+          const { id, nome, ingredientes, modo_preparo, imagemReceita, id_usuario, privacidade, categoria } = req.body;
                
-          await clientController.CreateReceita(nome, ingredientes, modo_preparo, imagemBase64);
+          await clientController.CreateReceita(id, nome, ingredientes, modo_preparo, imagemReceita, id_usuario, privacidade, categoria);
           res.status(201).json({ message: 'Receita cadastrada com sucesso!' });
 
         } catch (error) {
@@ -334,32 +192,7 @@ const userController = {
         }
       },
 
-    listbyIDReceitaUsuario: async (req, res) => {
-        try {
-            const sql = await clientController.getByIdReceitaUsuario(req.params.id);
-
-            if(sql.length> 0)
-            {
-                res.status(200).json(sql)
-            }
-            else{
-                res.status(401).json({msg:"Não existe registro no banco com este id"})
-            }
-        }
-        catch (error) {
-            res.status(500).json({ error: "Erro ao obter a lista de receitas" })
-        }
-    },
-    listAllReceitaUsuario: async (req, res) => {
-        try {
-            const clients = await clientController.getAllReceitaUsuario();
-            res.status(200).json(clients);
-            
-        }
-        catch (error) {
-            res.status(500).json({ error: "Erro ao obter a lista de receitas" })
-        }
-    },
+    
     
 };
 
