@@ -103,18 +103,21 @@ function Home({ route }) {
 
   const fetchData = useCallback(async () => {
     try {
-      const response = await axios.get('http://10.0.2.2:8085/api/readReceitaPub');
+      const response = await axios.get(`http://10.0.2.2:8085/api/readReceitaPub`);
       const sortedData = response.data.sort((a, b) => a.id - b.id);
       setData(sortedData);
       setFilteredData(sortedData);
-      setIsLoading(false); // Mova esta linha para evitar que o carregamento fique ativo após a busca inicial.
     } catch (error) {
       console.error(error);
     }
-  }, []);
+  },[]);
 
   useEffect(() => {
-    fetchData();
+    const interval = setInterval(()=> {
+      fetchData();
+      setIsLoading(false)
+    }, 1500)
+    
   }, [fetchData]);
 
   const toggleSidebar = () => setIsSidebarOpen(prev => !prev);

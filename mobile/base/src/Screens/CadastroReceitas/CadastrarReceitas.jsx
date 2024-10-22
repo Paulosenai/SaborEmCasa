@@ -25,9 +25,9 @@ export default function CadastrarReceitas({ navigation, route }) {
   const [imagem, setImagem] = useState(null);
   const [value, setValue] = useState('');
   const [status, setStatus] = useState('');
-  console.log(status)
-  const id_usuario = route.params.obj.id
-  console.log(id_usuario)
+
+  const id_usuario = route.params.obj.id;
+
   const handleImageLibraryLaunch = async () => {
     const options = {
       mediaType: 'photo',
@@ -35,8 +35,7 @@ export default function CadastrarReceitas({ navigation, route }) {
 
     try {
       const response = await launchImageLibrary(options);
-      console.log('pickedFile', response);
-
+      
       if (response.assets && response.assets.length > 0) {
         const image = response.assets[0];
         setImagem(image);
@@ -63,8 +62,8 @@ export default function CadastrarReceitas({ navigation, route }) {
         modo_preparo: modoPreparo,
         categoria: value,
         imagemBase64: imageData,
-        privacidade:status,
-        id_usuario: id_usuario
+        privacidade: status,
+        id_usuario: id_usuario,
       };
 
       const config = {
@@ -75,17 +74,16 @@ export default function CadastrarReceitas({ navigation, route }) {
       const apiUrl = 'http://10.0.2.2:8085/api/cadastrarReceitas';
 
       const response = await axios.post(apiUrl, data, config);
-      console.log(response.data);
 
       if (response.status === 201) {
         Alert.alert('Sucesso', 'Receita cadastrada com sucesso!');
+        navigation.navigate('Home'); 
         setNome('');
         setIngredientes('');
         setModoPreparo('');
         setImagem(null);
         setValue('');
         setStatus('');
-        
       }
     } catch (error) {
       console.error('Erro ao cadastrar a receita:', error);
@@ -108,7 +106,6 @@ export default function CadastrarReceitas({ navigation, route }) {
     { label: 'Saudaveis', value: 'saudavel' },
     { label: 'Sem Açucar', value: 'sem-acucar' },
   ];
-
 
   return (
     <SafeAreaView style={styles.container}>
@@ -145,7 +142,7 @@ export default function CadastrarReceitas({ navigation, route }) {
             style={{ backgroundColor: '#fff', width: '100%', height: 200, alignSelf: 'center', alignItems: 'center', marginBottom: 20 }}
           >
             <Image
-              style={{ width: 170, height: 150, resizeMode: 'contain'}}
+              style={{ width: 170, height: 150, resizeMode: 'contain' }}
               source={imagem ? { uri: imagem.uri } : require('../../../res/img/imageIcon.png')}
             />
           </Button>

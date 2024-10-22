@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import { View, FlatList, TouchableOpacity, Image, Text, SafeAreaView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
-import styles from "./Styles";
+import styles from './Styles';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const FAVORITE_API_URL = 'http://10.0.2.2:8085/api/readReceitaPub';
+const Favorite_Url = 'http://10.0.2.2:8085/api/readReceitaPub';
 
 const Favorites = () => {
   const [recipes, setRecipes] = useState([]);
   const [favorites, setFavorites] = useState([]);
   const navigation = useNavigation();
 
-  // Função para carregar receitas e favoritos
   const loadRecipesAndFavorites = async () => {
     try {
       const allRecipes = await fetchAllRecipes();
@@ -27,44 +27,34 @@ const Favorites = () => {
     }
   };
 
-  // Função para buscar todas as receitas
   const fetchAllRecipes = async () => {
-    const response = await fetch(FAVORITE_API_URL);
+    const response = await fetch(Favorite_Url);
     return await response.json();
   };
 
   useEffect(() => {
-    loadRecipesAndFavorites(); // Carrega os dados inicialmente
+    loadRecipesAndFavorites();
 
-    // Define um intervalo para atualizar os dados a cada 1,5 segundos
     const interval = setInterval(() => {
       loadRecipesAndFavorites();
     }, 1500);
 
-    // Limpa o intervalo quando o componente desmonta
     return () => clearInterval(interval);
   }, []);
 
-  const handleVizualizar = (id) => {
-    navigation.navigate('Receita', { id });
+  const handleFavoriteToggle = async (id) => {
+    const updatedFavorites = favorites.some(favItem => favItem.id === id) 
+      ? favorites.filter(favItem => favItem.id !== id) 
+      : [...favorites, recipes.find(recipe => recipe.id === id)];
+
+    setFavorites(updatedFavorites);
+
+    // Atualiza os favoritos no AsyncStorage
+    await AsyncStorage.setItem('favoritedItems', JSON.stringify(updatedFavorites.map(item => item.id)));
   };
 
-  const handleFavoriteToggle = async (id) => {
-    try {
-      const favorited = await AsyncStorage.getItem('favoritedItems');
-      const favoritedIds = favorited ? JSON.parse(favorited) : [];
-
-      const updatedFavoritedIds = favoritedIds.includes(id)
-        ? favoritedIds.filter(favId => favId !== id)
-        : [...favoritedIds, id];
-
-      await AsyncStorage.setItem('favoritedItems', JSON.stringify(updatedFavoritedIds));
-      
-      const updatedFavorites = recipes.filter(item => updatedFavoritedIds.includes(item.id));
-      setFavorites(updatedFavorites);
-    } catch (error) {
-      console.error('Failed to update favorites:', error);
-    }
+  const handleVizualizar = (id) => {
+    navigation.navigate('Receita', { id });
   };
 
   const renderItem = ({ item }) => (
@@ -88,14 +78,19 @@ const Favorites = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Icon name="arrow-back" size={20} color="#fff" />
+        </TouchableOpacity>
         <Text style={styles.headerTitle}>Itens Favoritados</Text>
       </View>
-      <FlatList
-        data={favorites}
-        renderItem={renderItem}
-        keyExtractor={item => String(item.id)}
-        numColumns={2}
-      />
+      <View style={styles.listContainer}>
+        <FlatList
+          data={favorites}
+          renderItem={renderItem}
+          keyExtractor={item => String(item.id)}
+          numColumns={2}
+        />
+      </View>
     </SafeAreaView>
   );
 };
