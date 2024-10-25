@@ -4,19 +4,18 @@ const jwt = require('jsonwebtoken');
 const salt = 10;
 
 const userModel = {
-    getAllUsers: async () =>{
-        const [result] = await connection.query("SELECT * FROM cadastro_senai")
-        .catch(erro => console.log(erro));
-        return result
-    },
+    // getAllUsers: async () =>{
+    //     const [result] = await connection.query("SELECT * FROM cadastro_senai")
+    //     .catch(erro => console.log(erro));
+    //     return result
+    // },
 
-    getByID: async (id) =>{
-        const [result] = await connection.query("SELECT * FROM cadastro WHERE id =?",[id])
-        .catch(erro => console.log(erro));
-        return result
-    },
+    // getByID: async (id) =>{
+    //     const [result] = await connection.query("SELECT * FROM cadastro WHERE id =?",[id])
+    //     .catch(erro => console.log(erro));
+    //     return result
+    // },
 
-    //Model para login
     getByEmail: async (email)=>{
         const [result] = await connection.query("SELECT * FROM usuariosCadastrados WHERE email=?", [email])
         .catch(erro => console.log(erro));
@@ -58,19 +57,18 @@ const userModel = {
         .catch(erro => console.log(erro));
         return result;
     },
-     //reset senha aluno
-    resetByEmail: async(email) =>{
-        const [result] = await connection.query("SELECT * FROM usuariosCadastrados WHERE email=?", [email])
-        .catch(error => console.log(error))
-        return result; 
-    },
-    //update the password
-    updatePassword: async(email,senha)=>{
-        const result = await connection.query("UPDATE usuariosCadastrados SET senha=? WHERE email=?",
-        [senha, email])
-        .catch(error => console.log(error))
-        return result;
-    },
+    // resetByEmail: async(email) =>{
+    //     const [result] = await connection.query("SELECT * FROM usuariosCadastrados WHERE email=?", [email])
+    //     .catch(error => console.log(error))
+    //     return result; 
+    // },
+    
+    // updatePassword: async(email,senha)=>{
+    //     const result = await connection.query("UPDATE usuariosCadastrados SET senha=? WHERE email=?",
+    //     [senha, email])
+    //     .catch(error => console.log(error))
+    //     return result;
+    // },
 
     getAllReceitas: async () => {
         const [result] = await connection.query("SELECT * FROM receitascadastradas ")
@@ -128,7 +126,12 @@ const userModel = {
             .catch(erro => console.log(erro));
         return result
     },
+    getAllFavoritosUsuario: async (id_usuario) => {
+        const [result] = await connection.query("SELECT * FROM favoritos WHERE id_usuario = ?", [id_usuario])
+            .catch(erro => console.log(erro));
+        return result
     
+    },
 };
 
 module.exports = userModel;

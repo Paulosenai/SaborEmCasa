@@ -61,21 +61,20 @@ const Sidebar = ({ isOpen, onClose }) => {
 
       <View style={styles.sidebarContent}>
         <Text style={styles.sidebarTitle}>Bem-vindo, {userName}</Text>
-        <TouchableOpacity style={styles.sidebarItem} onPress={handleLogout}>
-          <Text style={styles.sidebarItemText}>Logout</Text>
-        </TouchableOpacity>
         <TouchableOpacity style={styles.sidebarItem} onPress={() => navigateToScreen('LoginScreen')}>
           <Text style={styles.sidebarItemText}>Login</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.sidebarItem} onPress={() => navigateToScreen('RegisterScreen')}>
           <Text style={styles.sidebarItemText}>Registrar</Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.sidebarItem} onPress={handleLogout}>
+          <Text style={styles.sidebarItemText}>Logout</Text>
+        </TouchableOpacity>
       </View>
     </Animated.View>
   );
 };
 
-// Componente Home
 function Home({ route }) {
   const navigation = useNavigation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -100,6 +99,22 @@ function Home({ route }) {
 
     loadFavorites();
   }, []);
+
+  const handleFavoriteToggle = async (itemId) => {
+    const updatedFavorites = new Set(favoritedItems);
+    if (updatedFavorites.has(itemId)) {
+      updatedFavorites.delete(itemId);
+    } else {
+      updatedFavorites.add(itemId);
+    }
+    setFavoritedItems(updatedFavorites);
+
+    try {
+      await AsyncStorage.setItem('favoritedItems', JSON.stringify([...updatedFavorites]));
+    } catch (error) {
+      console.error('Failed to save favorites:', error);
+    }
+  };
 
   const fetchData = useCallback(async () => {
     try {
@@ -144,22 +159,6 @@ function Home({ route }) {
     navigation.navigate('Receita', { id });
   };
 
-  const handleFavoriteToggle = async (itemId) => {
-    const updatedFavorites = new Set(favoritedItems);
-    if (updatedFavorites.has(itemId)) {
-      updatedFavorites.delete(itemId);
-    } else {
-      updatedFavorites.add(itemId);
-    }
-    setFavoritedItems(updatedFavorites);
-
-    try {
-      await AsyncStorage.setItem('favoritedItems', JSON.stringify([...updatedFavorites]));
-    } catch (error) {
-      console.error('Failed to save favorites:', error);
-    }
-  };
-
   const renderItem = ({ item }) => (
     <SafeAreaView>
       <View style={styles.item}>
@@ -170,6 +169,7 @@ function Home({ route }) {
               <Text style={styles.title}>{item.nome}</Text>
               <TouchableOpacity onPress={() => handleFavoriteToggle(item.id)}>
                 <Icon
+                  style={styles.favoritoIcon}
                   name={favoritedItems.has(item.id) ? 'favorite' : 'favorite-border'}
                   size={24}
                   color="red"

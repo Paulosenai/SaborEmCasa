@@ -13,6 +13,7 @@ router.post("/api/reset", clientController.getEmailReset);//verificar o email de
 router.post("/api/resetpassword", clientController.resetPassword);//resetar a senha
 router.post('/api/cadastrarReceitas', clientController.CadastrarReceita);
 router.get("/api/readReceitas/",clientController.listAllReceitas);
+router.get("/api/readFavs/:id_usuario",clientController.listFavoritosUser);
 router.get("/api/readReceitas/:id",clientController.listReceitasById);
 router.get("/api/readReceitaUser/:id_usuario",clientController.listReceitasUser);
 router.get("/api/readReceitaPub",clientController.listReceitasPub);

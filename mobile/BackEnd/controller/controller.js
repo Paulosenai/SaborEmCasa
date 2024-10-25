@@ -179,6 +179,15 @@ const userController = {
             res.status(500).json({ error: "Erro ao obter a lista de receitas" })
         }
     },
+    listFavoritosUser: async (req, res) => {
+        try {
+            const clients = await clientController.getAllFavoritosUsuario(req.params.id_usuario);
+            res.status(200).json(clients[0]);
+        }
+        catch (error) {
+            res.status(500).json({ error: "Erro ao obter a lista de favoritos" })
+        }
+    },
     listReceitasPub: async (req, res) => {
         try {
             const clients = await clientController.getAllReceitasPub();

@@ -48,8 +48,6 @@ const Favorites = () => {
       : [...favorites, recipes.find(recipe => recipe.id === id)];
 
     setFavorites(updatedFavorites);
-
-    // Atualiza os favoritos no AsyncStorage
     await AsyncStorage.setItem('favoritedItems', JSON.stringify(updatedFavorites.map(item => item.id)));
   };
 
@@ -81,7 +79,7 @@ const Favorites = () => {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Icon name="arrow-back" size={20} color="#fff" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Itens Favoritados</Text>
+        <Text style={styles.headerTitle}>Receitas Favoritas</Text>
       </View>
       <View style={styles.listContainer}>
         <FlatList

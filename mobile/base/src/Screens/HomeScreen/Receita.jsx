@@ -76,9 +76,18 @@ export default function Receita({ navigation, route }) {
                 ))
             }
           </View>
+          <View style={styles.categoria}>
+            <Text style={styles.subTitle}>Categoria:</Text>
+            <Text style={styles.preparation}>{recipe.categoria}</Text>
+          </View>
+          
+          <View style={styles.modo_de_preparo}>
+            <Text style={styles.subTitle}>Modo de preparo:</Text>
+            <Text style={styles.preparation}>{recipe.modo_preparo}</Text>
+          </View>
 
-          <Text style={styles.subTitle}>Modo de preparo:</Text>
-          <Text style={styles.preparation}>{recipe.modo_preparo}</Text>
+          
+          
         </View>
 
       </ScrollView>

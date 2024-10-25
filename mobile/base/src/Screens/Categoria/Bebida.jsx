@@ -54,9 +54,6 @@ export default function Bebida({route}) {
     loadFavorites();
   }, []);
 
-
-
-
   const handleFavoriteToggle = async (itemId) => {
     const updatedFavorites = new Set(favoritedItems);
     if (updatedFavorites.has(itemId)) {
@@ -80,7 +77,7 @@ export default function Bebida({route}) {
         <TouchableOpacity onPress={() => handleVizualizar(item.id)}>
         <Image source={{uri: `data:image/jpeg;base64,${item.imagemReceita}`}} style={styles.image} />
           <View style={styles.content}>
-            <Text style={styles.title}>Receita: {item.nome}</Text>
+            <Text style={styles.title}>{item.nome}</Text>
             <TouchableOpacity onPress={() => handleFavoriteToggle(item.id)}>
               <Icon
                 name={favoritedItems.has(item.id) ? 'favorite' : 'favorite-border'}

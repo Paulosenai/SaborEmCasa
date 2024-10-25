@@ -31,25 +31,43 @@ export default function CadastrarReceitas({ navigation, route }) {
   const handleImageLibraryLaunch = async () => {
     const options = {
       mediaType: 'photo',
+      includeBase64: false,
     };
 
     try {
       const response = await launchImageLibrary(options);
+      console.warn('Responda da galeria:', response); 
       
-      if (response.assets && response.assets.length > 0) {
+      if (response.didCancel) {
+        Alert.alert('Seleção de Imagem', 'Você cancelou a seleção da imagem.');
+        console.warn('Usuário cancelou a seleção da imagem.');
+      } else if (response.error) {
+        Alert.alert('Erro', 'Erro ao abrir a galeria. Tente novamente.');
+        console.error('Erro ao abrir a galeria:', response.error); 
+      } else if (response.assets && response.assets.length > 0) {
         const image = response.assets[0];
         setImagem(image);
+        console.warn('Imagem selecionada:', image); 
       } else {
-        console.log('Nenhuma imagem selecionada.');
+        Alert.alert('Nenhuma imagem selecionada', 'Por favor, selecione uma imagem.');
+        console.warn('Nenhuma imagem foi selecionada.'); 
       }
     } catch (error) {
       console.error('Erro ao selecionar a imagem:', error);
+      Alert.alert('Erro', 'Ocorreu um erro ao tentar selecionar a imagem.');
     }
   };
 
   const handleSubmit = async () => {
     if (!nome || !ingredientes || !modoPreparo || !value || !status) {
-      Alert.alert('Campos obrigatórios', 'Por favor, preencha todos os campos.');
+      Alert.alert('Campos obrigatórios', 'Por favor, preencha todos os campos obrigatórios.');
+      console.warn('Campos obrigatórios não preenchidos.');
+      return;
+    }
+
+    if (!imagem) {
+      Alert.alert('Imagem necessária', 'Por favor, selecione uma imagem para sua receita.');
+      console.warn('Tentativa de envio sem imagem.'); 
       return;
     }
 
@@ -66,6 +84,8 @@ export default function CadastrarReceitas({ navigation, route }) {
         id_usuario: id_usuario,
       };
 
+      console.warn('Dados da receita que serão enviados:', data); 
+
       const config = {
         headers: {
           'Content-Type': 'application/json',
@@ -74,6 +94,7 @@ export default function CadastrarReceitas({ navigation, route }) {
       const apiUrl = 'http://10.0.2.2:8085/api/cadastrarReceitas';
 
       const response = await axios.post(apiUrl, data, config);
+      console.warn('Resposta da API:', response); 
 
       if (response.status === 201) {
         Alert.alert('Sucesso', 'Receita cadastrada com sucesso!');
@@ -84,10 +105,13 @@ export default function CadastrarReceitas({ navigation, route }) {
         setImagem(null);
         setValue('');
         setStatus('');
+      } else {
+        console.warn('Receita não cadastrada. Status da resposta:', response.status); 
+        Alert.alert('Erro', 'Ocorreu um erro ao cadastrar a receita. Por favor, tente novamente.');
       }
     } catch (error) {
       console.error('Erro ao cadastrar a receita:', error);
-      Alert.alert('Erro', 'Erro ao cadastrar a receita.');
+      Alert.alert('Erro', 'Ocorreu um erro ao cadastrar a receita. Por favor, tente novamente.');
     }
   };
 
@@ -153,7 +177,10 @@ export default function CadastrarReceitas({ navigation, route }) {
             placeholder="Nome:"
             placeholderTextColor="#FFA92C"
             value={nome}
-            onChangeText={setNome}
+            onChangeText={text => {
+              setNome(text);
+             
+            }}
           />
 
           <Text style={styles.title}>Ingredientes para a receita:</Text>
@@ -162,7 +189,9 @@ export default function CadastrarReceitas({ navigation, route }) {
             placeholder="Ingredientes:"
             placeholderTextColor="#FFA92C"
             value={ingredientes}
-            onChangeText={setIngredientes}
+            onChangeText={text => {
+              setIngredientes(text);
+            }}
             multiline
             numberOfLines={4}
           />
@@ -173,7 +202,10 @@ export default function CadastrarReceitas({ navigation, route }) {
             placeholder="Modo de Preparo:"
             placeholderTextColor="#FFA92C"
             value={modoPreparo}
-            onChangeText={setModoPreparo}
+            onChangeText={text => {
+              setModoPreparo(text);
+ 
+            }}
             multiline
             numberOfLines={4}
           />
@@ -194,13 +226,17 @@ export default function CadastrarReceitas({ navigation, route }) {
             value={value}
             onChange={item => {
               setValue(item.value);
+          
             }}
             renderItem={renderItem}
           />
 
           <SegmentedButtons
             value={status}
-            onValueChange={setStatus}
+            onValueChange={value => {
+              setStatus(value);
+              
+            }}
             buttons={[
               {
                 value: 'privado',

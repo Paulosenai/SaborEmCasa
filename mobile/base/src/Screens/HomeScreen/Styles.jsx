@@ -81,6 +81,7 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
     },
     card: {
+      position: 'relative',
       margin: 7,
       backgroundColor: '#fff',
       borderRadius: 8,
@@ -90,6 +91,7 @@ const styles = StyleSheet.create({
     },
     
     image: {
+      position: 'relative',
       borderTopLeftRadius: 8,
       borderTopRightRadius: 8,
       height: 150,
@@ -170,7 +172,7 @@ const styles = StyleSheet.create({
       height: 100,
       backgroundColor: 'white',
       alignItems: 'center',
-    }
+    },
 });
 
 export default styles;

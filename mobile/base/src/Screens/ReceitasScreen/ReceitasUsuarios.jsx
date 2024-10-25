@@ -42,7 +42,7 @@ const Sidebar = ({ isOpen, onClose }) => {
   );
 };
 
-const ReceitasUsuario = ({route}) => {
+const ReceitasUsuario = ({ route }) => {
   const navigation = useNavigation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [data, setData] = useState([]);
@@ -50,8 +50,8 @@ const ReceitasUsuario = ({route}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const id_usuario = route.params.obj.id
-  console.log(id_usuario)
+  const id_usuario = route.params.obj.id;
+
   const fetchData = useCallback(async () => {
     try {
       const response = await axios.get(`http://10.0.2.2:8085/api/readReceitaUser/${id_usuario}`);
@@ -61,14 +61,14 @@ const ReceitasUsuario = ({route}) => {
     } catch (error) {
       console.error(error);
     }
-  },[]);
+  }, [id_usuario]);
 
   useEffect(() => {
-    const interval = setInterval(()=> {
+    const interval = setInterval(() => {
       fetchData();
-      setIsLoading(false)
-    }, 1500)
-    
+      setIsLoading(false);
+    }, 1500);
+    return () => clearInterval(interval); 
   }, [fetchData]);
 
   const toggleSidebar = () => setIsSidebarOpen(prev => !prev);
@@ -87,7 +87,7 @@ const ReceitasUsuario = ({route}) => {
     if (query === '') {
       setFilteredData(data);
     } else {
-      setFilteredData(data.filter(item => item.title.toLowerCase().includes(query.toLowerCase())));
+      setFilteredData(data.filter(item => item.nome.toLowerCase().includes(query.toLowerCase())));
     }
   }, [data]);
 
@@ -99,7 +99,7 @@ const ReceitasUsuario = ({route}) => {
     <View style={styles.item}>
       <View style={styles.card}>
         <TouchableOpacity onPress={() => handleVizualizar(item.id)}>
-          <Image source={{uri: `data:image/jpeg;base64,${item.imagemReceita}`}} style={styles.image} />
+          <Image source={{ uri: `data:image/jpeg;base64,${item.imagemReceita}` }} style={styles.image} />
           <View style={styles.content}>
             <Text style={styles.title}>{item.nome}</Text>
           </View>
@@ -110,42 +110,42 @@ const ReceitasUsuario = ({route}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-        <Header
-          backgroundColor="#FFA92C"
-          barStyle="light-content"
-          leftComponent={
-            <View style={styles.headerComponentContainer}>
-              <Image source={require('../../../res/img/logo2.png')} style={{ width: 90, height: 50 }} />
-            </View>
-          }
-          centerComponent={isSearchVisible ? (
-              <TextInput
-                style={styles.searchInput}
-                placeholder="Pesquisar..."
-                placeholderTextColor={'#fff'}
-                value={searchQuery}
-                onChangeText={handleSearch}
-              />
-          ) : null}
-          rightComponent={(
-            <View style={styles.headerIconsContainer}>
-              <Icon
-                name="search"
-                size={30}
-                color="#fff"
-                onPress={toggleSearch}
-                style={styles.headerIcon}
-              />
-              <Icon
-                name="person"
-                size={30}
-                color="#fff"
-                onPress={toggleSidebar}
-                style={styles.headerIcon}
-              />
-            </View>
-          )}
-        />
+      <Header
+        backgroundColor="#FFA92C"
+        barStyle="light-content"
+        leftComponent={
+          <View style={styles.headerComponentContainer}>
+            <Image source={require('../../../res/img/logo2.png')} style={{ width: 90, height: 50 }} />
+          </View>
+        }
+        centerComponent={isSearchVisible ? (
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Pesquisar..."
+            placeholderTextColor={'#fff'}
+            value={searchQuery}
+            onChangeText={handleSearch}
+          />
+        ) : null}
+        rightComponent={(
+          <View style={styles.headerIconsContainer}>
+            <Icon
+              name="search"
+              size={30}
+              color="#fff"
+              onPress={toggleSearch}
+              style={styles.headerIcon}
+            />
+            <Icon
+              name="person"
+              size={30}
+              color="#fff"
+              onPress={toggleSidebar}
+              style={styles.headerIcon}
+            />
+          </View>
+        )}
+      />
       <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
       <ScrollView>
         <View style={styles.section}>
@@ -158,19 +158,24 @@ const ReceitasUsuario = ({route}) => {
         </View>
 
         {isLoading ? (
-                <ActivityIndicator style={{alignSelf: 'center', width: 150, height: '400'}} color="orange" /> 
-              ) : (
-                <FlatList
-          data={filteredData}
-          renderItem={renderItem}
-          extraData={filteredData}
-          keyExtractor={item => String(item.id)}
-          numColumns={2}
-          columnWrapperStyle={styles.row}
-          scrollEnabled={false}
-        />
-              )}
-        
+          <ActivityIndicator style={{ alignSelf: 'center', width: 150, height: '400' }} color="orange" />
+        ) : (
+          filteredData.length === 0 ? (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', height: 400 }}>
+              <Text style={{ fontSize: 18, color: '#333' }}>Cadastre sua receita</Text>
+            </View>
+          ) : (
+            <FlatList
+              data={filteredData}
+              renderItem={renderItem}
+              extraData={filteredData}
+              keyExtractor={item => String(item.id)}
+              numColumns={2}
+              columnWrapperStyle={styles.row}
+              scrollEnabled={false}
+            />
+          )
+        )}
       </ScrollView>
     </SafeAreaView>
   );
