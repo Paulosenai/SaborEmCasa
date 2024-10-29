@@ -66,7 +66,19 @@ const styles = StyleSheet.create({
     width: 400,
     height: 250,
   },
-        
+  errorContainer: {
+    marginVertical: 10,
+    padding: 10,
+    backgroundColor: '#F8D7DA', // Cor de fundo leve para a mensagem de erro
+    borderColor: '#F5C6CB', // Cor da borda
+    borderWidth: 1,
+    borderRadius: 5,
+},
+errorText: {
+    color: '#721C24', // Cor do texto de erro
+    fontSize: 16,
+    textAlign: 'center', // Centralizar o texto
+},   
 });
 
 export default styles;

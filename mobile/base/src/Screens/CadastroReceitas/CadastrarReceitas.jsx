@@ -25,7 +25,7 @@ export default function CadastrarReceitas({ navigation, route }) {
   const [imagem, setImagem] = useState(null);
   const [value, setValue] = useState('');
   const [status, setStatus] = useState('');
-
+  const userData = route.params.obj
   const id_usuario = route.params.obj.id;
 
   const handleImageLibraryLaunch = async () => {
@@ -98,7 +98,7 @@ export default function CadastrarReceitas({ navigation, route }) {
 
       if (response.status === 201) {
         Alert.alert('Sucesso', 'Receita cadastrada com sucesso!');
-        navigation.navigate('Home'); 
+        navigation.push('TabScreen', {userData}); 
         setNome('');
         setIngredientes('');
         setModoPreparo('');

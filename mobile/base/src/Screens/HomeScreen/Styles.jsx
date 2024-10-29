@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
       fontSize: 15,
       fontWeight: 'bold',
       marginBottom: 8,
-      textAlign: 'center',
+      textAlign: 'left',
     },
     description: {
       fontSize: 14,

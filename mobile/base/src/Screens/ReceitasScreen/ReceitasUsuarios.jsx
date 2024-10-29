@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { View, SafeAreaView, ScrollView, Image, ImageBackground, TouchableOpacity, FlatList, TextInput, Animated } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Text, Header } from '@rneui/themed';
-import styles from "./Style";
+import styles from "./Style"; 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
 import { ActivityIndicator } from "react-native-paper";
@@ -64,11 +64,7 @@ const ReceitasUsuario = ({ route }) => {
   }, [id_usuario]);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      fetchData();
-      setIsLoading(false);
-    }, 1500);
-    return () => clearInterval(interval); 
+    fetchData().finally(() => setIsLoading(false));
   }, [fetchData]);
 
   const toggleSidebar = () => setIsSidebarOpen(prev => !prev);
@@ -95,6 +91,17 @@ const ReceitasUsuario = ({ route }) => {
     navigation.navigate('VisualizaçãoReceitas', { id });
   };
 
+  const deleteRecipe = async (id) => {
+    try {
+      await axios.delete(`http://10.0.2.2:8085/api/deleteReceita/${id}`);
+      setData(currentData => currentData.filter(recipe => recipe.id !== id));
+      setFilteredData(currentData => currentData.filter(recipe => recipe.id !== id));
+      console.log("Receita deletada com sucesso!");
+    } catch (err) {
+      console.error("Erro ao deletar receita:", err);
+    }
+  };
+
   const renderItem = ({ item }) => (
     <View style={styles.item}>
       <View style={styles.card}>
@@ -102,6 +109,9 @@ const ReceitasUsuario = ({ route }) => {
           <Image source={{ uri: `data:image/jpeg;base64,${item.imagemReceita}` }} style={styles.image} />
           <View style={styles.content}>
             <Text style={styles.title}>{item.nome}</Text>
+            <TouchableOpacity onPress={() => deleteRecipe(item.id)}>
+              <Icon name="delete" size={24} color="red" />
+            </TouchableOpacity>
           </View>
         </TouchableOpacity>
       </View>
@@ -168,7 +178,6 @@ const ReceitasUsuario = ({ route }) => {
             <FlatList
               data={filteredData}
               renderItem={renderItem}
-              extraData={filteredData}
               keyExtractor={item => String(item.id)}
               numColumns={2}
               columnWrapperStyle={styles.row}

@@ -12,7 +12,6 @@ const Tab = createBottomTabNavigator();
 
 export function Inicio({route}) {
   const obj = route.params.userData;
-  console.log(obj);
 
   return (
     <Tab.Navigator

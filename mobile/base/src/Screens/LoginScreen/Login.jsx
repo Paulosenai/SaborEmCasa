@@ -4,6 +4,7 @@ import { Input, Text } from '@rneui/themed';
 import { Button } from 'galio-framework';
 import styles from "./Styles";
 import axios from 'axios';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -32,10 +33,8 @@ const Login = ({ navigation }) => {
           id: response.data.id,
           email: response.data.email,
           senha: response.data.senha,
+          nome: response.data.nome
         };
-
-        console.log(userData)
-
         // Enviar os dados do usuário para a HomePage
         navigation.navigate('TabScreen', { userData });
       } else {

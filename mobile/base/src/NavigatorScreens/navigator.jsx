@@ -8,6 +8,7 @@ import DoceScreen from '../Screens/Categoria/Doce';
 import SemAcucarScreen from '../Screens/Categoria/SemAcucar';
 import ReceitaCategorias from '../Screens/Categoria/ReceitaCategorias';
 
+
 import VisualizacaoReceitas from '../Screens/ReceitasScreen/VisualizacaoReceitas';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';

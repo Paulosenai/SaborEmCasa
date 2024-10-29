@@ -220,7 +220,52 @@ const userController = {
         }
       },
 
-    
+    deleteReceita: async (req, res) => {
+    const receitaId = req.params.id; 
+
+    try {
+        const receita = await clientController.getReceitasById(receitaId);
+
+        if (receita.length === 0) {
+            return res.status(404).json({ msg: "Receita não encontrada." });
+        }
+
+        await clientController.deleteReceita(receitaId);
+
+        res.status(200).json({ msg: "Receita deletada com sucesso!" });
+    } catch (error) {
+        console.error("Erro ao deletar a receita:", error);
+        res.status(500).json({ msg: "Erro ao deletar receita." });
+    }
+},
+
+    editReceita: async (req, res) => {
+    const receitaId = req.params.id; 
+    const { nome, ingredientes, modo_preparo, imagemBase64, privacidade, categoria } = req.body;
+    const loggedUserId = req.user.id; // Supondo que o ID do usuário logado está disponível no req.user
+
+    try {
+        // Verifica se a receita existe
+        const receita = await clientController.getReceitasById(receitaId);
+        
+        if (receita.length === 0) {
+            return res.status(404).json({ msg: "Receita não encontrada." });
+        }
+
+        // Verifica se o usuário é o proprietário da receita
+        if (receita[0].id_usuario !== loggedUserId) {
+            return res.status(403).json({ msg: "Você não tem permissão para editar esta receita." });
+        }
+        
+        // Atualiza a receita com os novos dados
+        await clientController.updateReceita(receitaId, { nome, ingredientes, modo_preparo, imagemBase64, privacidade, categoria });
+
+        res.status(200).json({ msg: "Receita atualizada com sucesso!" });
+    } catch (error) {
+        console.error("Erro ao editar a receita:", error);
+        res.status(500).json({ msg: "Erro ao editar receita." });
+    }
+    }
     
 };
 

@@ -9,73 +9,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ActivityIndicator } from "react-native-paper";
 
 // Componente Sidebar
-const Sidebar = ({ isOpen, onClose }) => {
-  const [translateX] = useState(new Animated.Value(300));
-  const navigation = useNavigation();
-  const [userName, setUserName] = useState('');
 
-  useEffect(() => {
-    Animated.timing(translateX, {
-      toValue: isOpen ? 0 : 300,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
-  }, [isOpen]);
-
-  const loadUserName = async () => {
-    try {
-      const userData = await AsyncStorage.getItem('userData');
-      if (userData) {
-        const { name } = JSON.parse(userData);
-        setUserName(name || 'Usuário');
-      }
-    } catch (error) {
-      console.error('Erro ao carregar o nome do usuário:', error);
-    }
-  };
-
-  useEffect(() => {
-    loadUserName();
-  }, []);
-
-  const navigateToScreen = (screenName) => {
-    navigation.navigate(screenName);
-    onClose();
-  };
-
-  const handleLogout = async () => {
-    try {
-      await AsyncStorage.removeItem('userData');
-      onClose();
-      navigation.replace('LoginScreen');
-    } catch (error) {
-      console.error('Erro ao realizar logout:', error);
-    }
-  };
-
-  return (
-    <Animated.View style={[styles.sidebarContainer, { transform: [{ translateX }] }]}>
-      <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-        <Text style={styles.closeButtonText}>Fechar</Text>
-      </TouchableOpacity>
-
-      <View style={styles.sidebarContent}>
-        <Text style={styles.sidebarTitle}>Bem-vindo, {userName}</Text>
-        <TouchableOpacity style={styles.sidebarItem} onPress={() => navigateToScreen('LoginScreen')}>
-          <Text style={styles.sidebarItemText}>Login</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.sidebarItem} onPress={() => navigateToScreen('RegisterScreen')}>
-          <Text style={styles.sidebarItemText}>Registrar</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.sidebarItem} onPress={handleLogout}>
-          <Text style={styles.sidebarItemText}>Logout</Text>
-        </TouchableOpacity>
-      </View>
-    </Animated.View>
-  );
-};
 
 function Home({ route }) {
+  console.log(route.params.obj)
   const navigation = useNavigation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [data, setData] = useState([]);
@@ -84,7 +21,6 @@ function Home({ route }) {
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [favoritedItems, setFavoritedItems] = useState(new Set());
   const [isLoading, setIsLoading] = useState(true);
-
   useEffect(() => {
     const loadFavorites = async () => {
       try {
@@ -99,6 +35,56 @@ function Home({ route }) {
 
     loadFavorites();
   }, []);
+
+  const Sidebar = ({ isOpen, onClose,  }) => {
+    // const [nome, email] = route.params.obj
+    const [translateX] = useState(new Animated.Value(300));
+    const navigation = useNavigation();
+    useEffect(() => {
+      Animated.timing(translateX, {
+        toValue: isOpen ? 0 : 300,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    }, [isOpen]);
+  
+
+    const navigateToScreen = (screenName) => {
+      navigation.navigate(screenName);
+      onClose();
+    };
+  
+    const handleLogout = async () => {
+      try {
+        await AsyncStorage.removeItem('userData');
+        onClose();
+        navigation.replace('LoginScreen');
+      } catch (error) {
+        console.error('Erro ao realizar logout:', error);
+      }
+    };
+  
+    return (
+      <Animated.View style={[styles.sidebarContainer, { transform: [{ translateX }] }]}>
+        <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+          <Text style={styles.closeButtonText}>Fechar</Text>
+        </TouchableOpacity>
+  
+        <View style={styles.sidebarContent}>
+          <Text style={styles.sidebarTitle}>Bem-vindo, {route.params.obj.nome} </Text>
+          <TouchableOpacity style={styles.sidebarItem} onPress={() => navigateToScreen('LoginScreen')}>
+            <Text style={styles.sidebarItemText}>Login</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.sidebarItem} onPress={() => navigateToScreen('RegisterScreen')}>
+            <Text style={styles.sidebarItemText}>Registrar</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.sidebarItem} onPress={handleLogout}>
+            <Text style={styles.sidebarItemText}>Logout</Text>
+          </TouchableOpacity>
+        </View>
+      </Animated.View>
+    );
+  };
 
   const handleFavoriteToggle = async (itemId) => {
     const updatedFavorites = new Set(favoritedItems);
@@ -128,10 +114,19 @@ function Home({ route }) {
   },[]);
 
   useEffect(() => {
-    const interval = setInterval(()=> {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`http://10.0.2.2:8085/api/readReceitaPub`);
+        const sortedData = response.data.sort((a, b) => a.id - b.id);
+        setData(sortedData);
+        setFilteredData(sortedData);
+      } catch (error) {
+        console.error(error);
+      }
+    };
       fetchData();
       setIsLoading(false)
-    }, 1500)
+    
     
   }, [fetchData]);
 
@@ -223,7 +218,6 @@ function Home({ route }) {
         />
 
         <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
-
         <View style={styles.section}>
           <View style={styles.newsCard}>
             <ImageBackground
