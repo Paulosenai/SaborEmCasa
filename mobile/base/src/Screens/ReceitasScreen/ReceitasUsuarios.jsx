@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { View, SafeAreaView, ScrollView, Image, ImageBackground, TouchableOpacity, FlatList, TextInput, Animated } from 'react-native';
+import { View, SafeAreaView, ScrollView, Image, ImageBackground, TouchableOpacity, FlatList, Alert, Animated } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Text, Header } from '@rneui/themed';
 import styles from "./Style"; 
@@ -47,8 +47,6 @@ const ReceitasUsuario = ({ route }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const id_usuario = route.params.obj.id;
 
@@ -70,36 +68,36 @@ const ReceitasUsuario = ({ route }) => {
   const toggleSidebar = () => setIsSidebarOpen(prev => !prev);
   const closeSidebar = () => setIsSidebarOpen(false);
 
-  const toggleSearch = () => {
-    setIsSearchVisible(prev => !prev);
-    if (isSearchVisible) {
-      setSearchQuery('');
-      setFilteredData(data);
-    }
-  };
-
-  const handleSearch = useCallback((query) => {
-    setSearchQuery(query);
-    if (query === '') {
-      setFilteredData(data);
-    } else {
-      setFilteredData(data.filter(item => item.nome.toLowerCase().includes(query.toLowerCase())));
-    }
-  }, [data]);
-
   const handleVizualizar = (id) => {
     navigation.navigate('VisualizaçãoReceitas', { id });
   };
 
-  const deleteRecipe = async (id) => {
-    try {
-      await axios.delete(`http://10.0.2.2:8085/api/deleteReceita/${id}`);
-      setData(currentData => currentData.filter(recipe => recipe.id !== id));
-      setFilteredData(currentData => currentData.filter(recipe => recipe.id !== id));
-      console.log("Receita deletada com sucesso!");
-    } catch (err) {
-      console.error("Erro ao deletar receita:", err);
-    }
+  const deleteRecipe = (id) => {
+    Alert.alert(
+      "Confirmar Exclusão",
+      "Você tem certeza que deseja deletar esta receita?",
+      [
+        {
+          text: "cancelar",
+          onPress: () => console.log("Exclusão cancelada"),
+          style: "cancel"
+        },
+        {
+          text: "Sim",
+          onPress: async () => {
+            try {
+              await axios.delete(`http://10.0.2.2:8085/api/deleteReceita/${id}`);
+              setData(currentData => currentData.filter(recipe => recipe.id !== id));
+              setFilteredData(currentData => currentData.filter(recipe => recipe.id !== id));
+              console.log("Receita deletada com sucesso!");
+            } catch (err) {
+              console.error("Erro ao deletar receita:", err);
+            }
+          }
+        }
+      ],
+      { cancelable: false }
+    );
   };
 
   const renderItem = ({ item }) => (
@@ -128,30 +126,14 @@ const ReceitasUsuario = ({ route }) => {
             <Image source={require('../../../res/img/logo2.png')} style={{ width: 90, height: 50 }} />
           </View>
         }
-        centerComponent={isSearchVisible ? (
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Pesquisar..."
-            placeholderTextColor={'#fff'}
-            value={searchQuery}
-            onChangeText={handleSearch}
-          />
-        ) : null}
         rightComponent={(
           <View style={styles.headerIconsContainer}>
-            <Icon
-              name="search"
-              size={30}
-              color="#fff"
-              onPress={toggleSearch}
-              style={styles.headerIcon}
-            />
             <Icon
               name="person"
               size={30}
               color="#fff"
               onPress={toggleSidebar}
-              style={styles.headerIcon}
+              style={{ position: "absolute", left: 30, }}
             />
           </View>
         )}

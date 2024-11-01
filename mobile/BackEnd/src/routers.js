@@ -3,7 +3,7 @@ const clientController = require("../controller/controller");
 const router = express.Router();
 
 // Rotas existentes
-router.get("/", clientController.getRoot); // rota raiz
+router.get("/", clientController.getRoot); // Rota raiz
 router.get("/api/read", clientController.listAllUsers); // Listar todos os usuários
 router.get("/api/read/:id", clientController.listByID); // Listar usuário por id
 router.post("/api/create", clientController.createNewUser); // Cadastrar novo usuário
@@ -20,6 +20,8 @@ router.get("/api/readReceitaUser/:id_usuario", clientController.listReceitasUser
 router.get("/api/readReceitaPub", clientController.listReceitasPub);
 router.get("/api/readReceitaCategoria/:categoria", clientController.listReceitasByCategoria);
 router.delete("/api/deleteReceita/:id", clientController.deleteReceita);
-router.put("/api/editReceita/:id", clientController.editReceita); 
+router.post("/api/updateLikes", clientController.updateLikes); // Atualizar likes
+router.post("/api/updateDislikes", clientController.updateDislikes); // Atualizar dislikes
+router.get("/api/readReceitasAlta", clientController.listReceitasEmAlta); // Listar receitas em alta
 
 module.exports = router;

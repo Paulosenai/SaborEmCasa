@@ -36,7 +36,7 @@ const userModel = {
         return result;
     },
     updateUser: async (id, email, senha) => {
-        const hashsenha = await bcrypt.hash(senha, salt); // Re-hash if password is updated
+        const hashsenha = await bcrypt.hash(senha, salt); 
         const [result] = await connection.query("UPDATE usuariosCadastrados SET email=?, senha=? WHERE id=?", [email, hashsenha, id])
             .catch(erro => console.log(erro));
         return result;
@@ -100,11 +100,23 @@ const userModel = {
             .catch(erro => console.log(erro));
         return result;
     },
-    updateReceita: async (id, data) => {
-        const { nome, ingredientes, modo_preparo, imagemBase64, privacidade, categoria } = data;
-        const result = await db.query('UPDATE receitas SET nome = ?, ingredientes = ?, modo_preparo = ?, imagemBase64 = ?, privacidade = ?, categoria = ? WHERE id = ?', [nome, ingredientes, modo_preparo, imagemBase64, privacidade, categoria, id]);
+    updateLikes: async (id, likes) => {
+        const [result] = await connection.query("UPDATE receitascadastradas SET likes = ? WHERE id = ?", [likes, id])
+            .catch(erro => console.log(erro));
         return result;
-    }
+    },
+
+    updateDislikes: async (id, dislikes) => {
+        const [result] = await connection.query("UPDATE receitascadastradas SET dislikes = ? WHERE id = ?", [dislikes, id])
+            .catch(erro => console.log(erro));
+        return result;
+    },
+    
+    getAllReceitasEmAlta: async (limiteLikes) => {
+        const [result] = await connection.query("SELECT * FROM receitascadastradas WHERE likes > ?", [limiteLikes])
+            .catch(error => console.log(error));
+        return result;
+    },
 };
 
 module.exports = userModel;

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { Image, SafeAreaView, View, Alert, Animated, Easing, ActivityIndicator, } from "react-native";
+import { Image, SafeAreaView, View, Alert, Animated, Easing, ActivityIndicator, TouchableOpacity } from "react-native";
 import { Input, Text } from '@rneui/themed';
+import Icon from 'react-native-vector-icons/FontAwesome'; 
 import { Button } from 'galio-framework';
 import styles from "./Styles";
 import axios from 'axios';
@@ -11,10 +12,10 @@ const Login = ({ navigation }) => {
   const [senha, setSenha] = useState('');
   const [animation] = useState(new Animated.Value(0));
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
-  // Função de login
   const handleLogin = async () => {
-  setIsLoading(true);
+    setIsLoading(true);
     try {
       if (!email || !senha) {
         Alert.alert('Erro', 'Por favor, preencha todos os campos!');
@@ -47,8 +48,7 @@ const Login = ({ navigation }) => {
         console.log(error);
         Alert.alert('Erro', 'Email ou senha incorretos. Por favor, tente novamente');
       }
-     }
-     finally {
+    } finally {
       setIsLoading(false);
     }
   };
@@ -64,6 +64,10 @@ const Login = ({ navigation }) => {
       navigation.navigate('RegisterScreen');
       animation.setValue(0);
     });
+  };
+
+  const handleNavigateToForgotPassword = () => {
+    navigation.navigate('Esqueceuasenha'); 
   };
 
   const translateY = animation.interpolate({
@@ -91,19 +95,23 @@ const Login = ({ navigation }) => {
               style={styles.boxlogin}
               placeholder='Email:'
               value={email}
-              onChangeText={setEmail}
+              onChangeText={(text) => setEmail(text.toLowerCase())}
               keyboardType="email-address"
             />
             <Input
               inputContainerStyle={{ borderBottomWidth: 0 }}
               placeholderTextColor={'#FFA92C'}
               style={styles.boxlogin}
-              inputStyle={styles.inputText}
               placeholder='Senha:'
               value={senha}
               onChangeText={setSenha}
-              secureTextEntry
+              secureTextEntry={!showPassword}
               color='#FFA92C'
+              rightIcon={
+                <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                  <Icon name={showPassword ? 'eye' : 'eye-slash'} style={{ position: "absolute", right: 15, top: 10 }} size={20} color="#FFA92C" />
+                </TouchableOpacity>
+              }
             />
             <View style={styles.buttonContainer}>
               <Button
@@ -112,22 +120,29 @@ const Login = ({ navigation }) => {
                 color='red'
                 onPress={handleLogin}
                 style={styles.buttonCont}
-		            disabled={isLoading} 
+                disabled={isLoading} 
               >
                 {isLoading ? (
-                <ActivityIndicator color="white" /> 
-              ) : (
-                <Text style={styles.buttonText}>Entrar</Text>
-              )}
+                  <ActivityIndicator color="white" /> 
+                ) : (
+                  <Text style={styles.buttonText}>Entrar</Text>
+                )}
               </Button>
             </View>
             <Text style={styles.remember} onPress={handleNavigateToRegister}>
               Não possui login? Faça o cadastro!
+            </Text>
+            <Text 
+              style={[styles.forgotPassword, { textAlign: 'center', fontWeight: 'bold', color: '#FFA92C', fontSize: 15, }]} 
+              onPress={handleNavigateToForgotPassword}
+            >
+              Esqueceu a senha?
             </Text>
           </View>
         </View>
       </Animated.View>
     </SafeAreaView>
   );
- }
+}
+
 export default Login;

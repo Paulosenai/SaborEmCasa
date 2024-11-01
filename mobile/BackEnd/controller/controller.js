@@ -238,35 +238,50 @@ const userController = {
         res.status(500).json({ msg: "Erro ao deletar receita." });
     }
 },
-
-    editReceita: async (req, res) => {
-    const receitaId = req.params.id; 
-    const { nome, ingredientes, modo_preparo, imagemBase64, privacidade, categoria } = req.body;
-    const loggedUserId = req.user.id; // Supondo que o ID do usuário logado está disponível no req.user
+updateLikes: async (req, res) => {
+    const { id, likes } = req.body;
 
     try {
-        // Verifica se a receita existe
-        const receita = await clientController.getReceitasById(receitaId);
-        
-        if (receita.length === 0) {
-            return res.status(404).json({ msg: "Receita não encontrada." });
-        }
-
-        // Verifica se o usuário é o proprietário da receita
-        if (receita[0].id_usuario !== loggedUserId) {
-            return res.status(403).json({ msg: "Você não tem permissão para editar esta receita." });
-        }
-        
-        // Atualiza a receita com os novos dados
-        await clientController.updateReceita(receitaId, { nome, ingredientes, modo_preparo, imagemBase64, privacidade, categoria });
-
-        res.status(200).json({ msg: "Receita atualizada com sucesso!" });
+        await clientController.updateLikes(id, likes);
+        res.status(200).json({ msg: 'Likes atualizados com sucesso.' });
     } catch (error) {
-        console.error("Erro ao editar a receita:", error);
-        res.status(500).json({ msg: "Erro ao editar receita." });
+        console.error('Erro ao atualizar likes:', error);
+        res.status(500).json({ msg: 'Erro ao atualizar likes.' });
     }
+},
+
+updateDislikes: async (req, res) => {
+    const { id, dislikes } = req.body;
+
+    try {
+        await clientController.updateDislikes(id, dislikes);
+        res.status(200).json({ msg: 'Dislikes atualizados com sucesso.' });
+    } catch (error) {
+        console.error('Erro ao atualizar dislikes:', error);
+        res.status(500).json({ msg: 'Erro ao atualizar dislikes.' });
     }
-    
+},
+
+listReceitasEmAlta: async (req, res) => {
+    try {
+
+        //listar as receitas
+        const receitas = await clientController.getAllReceitas(); 
+
+        //ordenar as receitas por quantidade de like
+        const receitasEmAlta = receitas.sort((a, b) => (b.likes || 0) - (a.likes || 0));
+
+        //puxa as receitas que tem like
+        if (receitasEmAlta.length > 0) {
+            res.status(200).json(receitasEmAlta);
+        } else {
+            res.status(404).json({ msg: "Nenhuma receita em alta encontrada." });
+        }
+    } catch (error) {
+        console.error("Erro ao buscar receitas em alta:", error);
+        res.status(500).json({ error: "Erro ao obter receitas em alta." });
+    }
+},
 };
 
 module.exports = userController;
