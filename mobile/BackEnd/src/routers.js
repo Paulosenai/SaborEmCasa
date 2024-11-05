@@ -12,16 +12,16 @@ router.post("/api/registerUser", clientController.register); // Cadastrar um nov
 router.post("/api/validate", clientController.login); // Validar o login 
 router.post("/api/reset", clientController.getEmailReset); // Verificar o email de reset
 router.post("/api/resetpassword", clientController.resetPassword); // Resetar a senha
-router.post('/api/cadastrarReceitas', clientController.CadastrarReceita);
-router.get("/api/readReceitas/", clientController.listAllReceitas);
-router.get("/api/readFavs/:id_usuario", clientController.listFavoritosUser);
-router.get("/api/readReceitas/:id", clientController.listReceitasById);
-router.get("/api/readReceitaUser/:id_usuario", clientController.listReceitasUser);
-router.get("/api/readReceitaPub", clientController.listReceitasPub);
-router.get("/api/readReceitaCategoria/:categoria", clientController.listReceitasByCategoria);
-router.delete("/api/deleteReceita/:id", clientController.deleteReceita);
-router.post("/api/updateLikes", clientController.updateLikes); // Atualizar likes
-router.post("/api/updateDislikes", clientController.updateDislikes); // Atualizar dislikes
-router.get("/api/readReceitasAlta", clientController.listReceitasEmAlta); // Listar receitas em alta
+router.post('/api/cadastrarReceitas', clientController.CadastrarReceita); // Cadastrar uma receita
+router.get("/api/readReceitas/", clientController.listAllReceitas); // Listar todas as receitas
+router.get("/api/readFavs/:id_usuario", clientController.listFavoritosUser); // Listar favoritos de um usuário
+router.get("/api/readReceitas/:id", clientController.listReceitasById); // Listar receita por ID
+router.get("/api/readReceitaUser/:id_usuario", clientController.listReceitasUser); // Listar receitas de um usuário
+router.get("/api/readReceitaPub", clientController.listReceitasPub); // Listar receitas públicas
+router.get("/api/readReceitaCategoria/:categoria", clientController.listReceitasByCategoria); // Listar receitas por categoria
+router.delete("/api/deleteReceita/:id", clientController.deleteReceita); // Deletar receita
+
+// Rota para atualizar receita
+router.put("/api/updateReceita/:id", clientController.updateReceita); // Atualizar receita
 
 module.exports = router;

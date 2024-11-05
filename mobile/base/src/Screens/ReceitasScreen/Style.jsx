@@ -168,6 +168,8 @@ const styles = StyleSheet.create({
       color: '#f2f2f2',
       marginTop: 20,
     },
+
+    
 });
 
 export default styles;

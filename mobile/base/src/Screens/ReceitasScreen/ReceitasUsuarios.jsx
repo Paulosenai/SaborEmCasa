@@ -62,7 +62,16 @@ const ReceitasUsuario = ({ route }) => {
   }, [id_usuario]);
 
   useEffect(() => {
+    // Fetch the data initially
     fetchData().finally(() => setIsLoading(false));
+
+    // Set up interval to fetch data every 5 seconds
+    const interval = setInterval(() => {
+      fetchData();
+    }, 5000);
+
+    // Cleanup interval when component is unmounted
+    return () => clearInterval(interval);
   }, [fetchData]);
 
   const toggleSidebar = () => setIsSidebarOpen(prev => !prev);
@@ -107,14 +116,23 @@ const ReceitasUsuario = ({ route }) => {
           <Image source={{ uri: `data:image/jpeg;base64,${item.imagemReceita}` }} style={styles.image} />
           <View style={styles.content}>
             <Text style={styles.title}>{item.nome}</Text>
-            <TouchableOpacity onPress={() => deleteRecipe(item.id)}>
-              <Icon name="delete" size={24} color="red" />
-            </TouchableOpacity>
+            <View style={styles.actions}>
+              <TouchableOpacity onPress={() => deleteRecipe(item.id)}>
+                <Icon name="delete" size={24} color="red" />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => handleEdit(item)}>
+                <Icon name="edit" size={24} color="blue" />
+              </TouchableOpacity>
+            </View>
           </View>
         </TouchableOpacity>
       </View>
     </View>
   );
+  
+  const handleEdit = (recipe) => {
+    navigation.navigate('Editrecipe', { recipe });
+  };
 
   return (
     <SafeAreaView style={styles.container}>

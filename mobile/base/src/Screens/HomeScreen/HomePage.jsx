@@ -16,8 +16,6 @@ function Home({ route }) {
   const [filteredData, setFilteredData] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [favoritedItems, setFavoritedItems] = useState(new Set());
-  const [likedItems, setLikedItems] = useState(new Set());  // Usado para armazenar os itens que o usuário gostou
-  const [dislikes, setDislikes] = useState(new Map());
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -27,12 +25,8 @@ function Home({ route }) {
         if (favorited) {
           setFavoritedItems(new Set(JSON.parse(favorited)));
         }
-        const liked = await AsyncStorage.getItem('likedItems');
-        if (liked) {
-          setLikedItems(new Set(JSON.parse(liked)));
-        }
       } catch (error) {
-        console.error('Failed to load favorites or likes:', error);
+        console.error('Failed to load favorites:', error);
       }
     };
     loadFavorites();
@@ -121,49 +115,6 @@ function Home({ route }) {
     }
   };
 
-  const handleLikeToggle = async (itemId) => {
-    const updatedLikes = new Set(likedItems);
-
-    if (updatedLikes.has(itemId)) {
-      // Remove o like
-      updatedLikes.delete(itemId);
-      console.log("Like removido.");
-    } else {
-      // Adiciona um like
-      updatedLikes.add(itemId);
-      console.log("Like adicionado.");
-    }
-
-    setLikedItems(updatedLikes);
-
-    try {
-      // Persistindo likes no AsyncStorage
-      await AsyncStorage.setItem('likedItems', JSON.stringify([...updatedLikes]));
-      // Aqui você pode opcionalmente atualizar o backend
-      await axios.post(`http://10.0.2.2:8085/api/updateLikes`, { id: itemId, likes: updatedLikes.has(itemId) ? 1 : 0 });
-    } catch (error) {
-      console.error('Erro ao atualizar likes:', error);
-    }
-  };
-
-  const handleDislikeToggle = async (itemId) => {
-    try {
-      const updatedDislikes = new Map(dislikes);
-      
-      if (updatedDislikes.has(itemId)) {
-        updatedDislikes.set(itemId, updatedDislikes.get(itemId) + 1);
-      } else {
-        updatedDislikes.set(itemId, 1);
-      }
-
-      setDislikes(updatedDislikes);
-      
-      await axios.post(`http://10.0.2.2:8085/api/updateDislikes`, { id: itemId, dislikes: updatedDislikes.get(itemId) });
-    } catch (error) {
-      console.error('Erro ao atualizar dislikes:', error);
-    }
-  };
-
   const toggleSidebar = () => setIsSidebarOpen(prev => !prev);
   const closeSidebar = () => setIsSidebarOpen(false);
 
@@ -184,14 +135,6 @@ function Home({ route }) {
             <View style={styles.content}>
               <Text style={styles.title}>{item.nome}</Text>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                <TouchableOpacity onPress={() => handleLikeToggle(item.id)}>
-                  <Icon name={likedItems.has(item.id) ? "thumb-up" : "thumb-up-alt"} size={20} color={likedItems.has(item.id) ? "blue" : "grey"} />
-                  <Text>{likedItems.has(item.id) ? 1 : 0}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => handleDislikeToggle(item.id)}>
-                  <Icon name="thumb-down" size={20} color={dislikes.get(item.id) ? "red" : "grey"} />
-                  <Text>{dislikes.get(item.id) || 0}</Text>
-                </TouchableOpacity>
                 <TouchableOpacity onPress={() => handleFavoriteToggle(item.id)}>
                   <Icon
                     name={favoritedItems.has(item.id) ? 'favorite' : 'favorite-border'}

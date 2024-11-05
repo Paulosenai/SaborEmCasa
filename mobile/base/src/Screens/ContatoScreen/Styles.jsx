@@ -9,6 +9,9 @@ const styles = StyleSheet.create({
       flex: 1,
       justifyContent: 'space-between', 
     },
+    newsCard: {
+        marginBottom: 6,
+    },
     bannerstyletext: {
       fontWeight: 'bold',
       color: '#fff',
@@ -17,7 +20,7 @@ const styles = StyleSheet.create({
     newsImage: {
         margin: 10,
         width: '98%',
-        height: 200,
+        height: 130,
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -40,12 +43,7 @@ const styles = StyleSheet.create({
     },
     searchInput: {
       borderRadius: 50,
-      color: '#fff',
-      marginTop: 3,
-      borderWidth: 1,
-      borderColor: '#fff',
-      padding: 10,
-      width: 180,
+      backgroundColor: '',
     },
     categoria: {
       borderRadius: 8,
@@ -63,7 +61,9 @@ const styles = StyleSheet.create({
     headerIconsContainer: {
       width: 50,
       flexDirection: 'row',
-      margin: 10,
+      position: 'absolute',
+      top: 10,
+      left: 50,
     },
     headerIcon: {
       padding: 2,
@@ -81,17 +81,15 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
     },
     card: {
-      position: 'relative',
-      margin: 7,
+      margin: 2,
       backgroundColor: '#fff',
       borderRadius: 8,
       marginBottom: 16,
       elevation: 4, 
-      width: 190, 
+      width: 200, 
     },
     
     image: {
-      position: 'relative',
       borderTopLeftRadius: 8,
       borderTopRightRadius: 8,
       height: 150,
@@ -113,7 +111,7 @@ const styles = StyleSheet.create({
       fontSize: 15,
       fontWeight: 'bold',
       marginBottom: 8,
-      textAlign: 'left',
+      textAlign: 'center',
     },
     description: {
       fontSize: 14,
@@ -121,7 +119,7 @@ const styles = StyleSheet.create({
     sidebarContainer: {
       position: 'absolute',
       top: 0,
-      right: 0,
+      left: 0,
       backgroundColor: '#FFA92C', 
       height: '100%',
       width: 250,
@@ -150,7 +148,7 @@ const styles = StyleSheet.create({
     },
     sidebarItemText: {
       fontSize: 18,
-      color: '#fff',
+      color: '#f2f2f2',
       flex: 1, 
     },
     closeButton: {
@@ -164,48 +162,48 @@ const styles = StyleSheet.create({
       color: '#f2f2f2',
       marginTop: 20,
     },
-    userName: {
-      color: 'black',
+    containerInfos: {
+      flexDirection: 'row',  
+      alignItems: 'center',  
+      padding: 10,
     },
-    userInfoContainer: {
-      width: 100,
-      height: 100,
-      backgroundColor: 'white',
-      alignItems: 'center',
+    avatarImage: {
+      width: 80,
+      height: 80,
+      borderRadius: 40,
+      marginRight: 10, 
     },
-      likeButton: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        padding: 8,
-        borderRadius: 5,
-        backgroundColor: '#f0f0f0',
-        elevation: 2, 
-        marginHorizontal: 5,
-        borderColor: 'lightgrey',
-        borderWidth: 1,
-      },
-      dislikeButton: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        padding: 8,
-        borderRadius: 5,
-        backgroundColor: '#f0f0f0',
-        elevation: 2,
-        marginHorizontal: 5,
-        borderColor: 'lightgrey',
-        borderWidth: 1,
-      },
-      buttonText: {
-        marginLeft: 5,
-        fontSize: 16,
-        color: '#333',
-      },
-      liked: {
-        backgroundColor: '#d1e7dd', // Cor de fundo quando o item está curtido
-      },
-      disliked: {
-        backgroundColor: '#f8d7da', // Cor de fundo quando o item está descurtido
-      },
+    infoTextContainer: {
+      flex: 1,  
+    },
+    titleinfo: {
+      color: '#FFA92C',
+      fontSize: 20,
+      fontWeight: 'bold',
+    },
+    descriptioninfo: {
+      fontSize: 14,
+      color: '#555',
+    },
+    imageBack: {
+      margin: 10,
+      borderRadius: 15,
+      width: '95%',
+      height: 140,
+    },
+    textImageback: {
+      fontSize: 16,
+      textAlign: 'center',
+      fontWeight: 'bold',
+      marginEnd: 0,
+      color: '#555'
+    },
+    cardContato: {
+      borderRadius: 20,
+      borderWidth: 3,
+      borderColor: '#FFA92C',
+      margin: 10,
+    },
 });
 
 export default styles;

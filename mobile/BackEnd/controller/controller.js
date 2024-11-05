@@ -238,48 +238,26 @@ const userController = {
         res.status(500).json({ msg: "Erro ao deletar receita." });
     }
 },
-updateLikes: async (req, res) => {
-    const { id, likes } = req.body;
+updateReceita: async (req, res) => {
+    const { id } = req.params; // Pegando o ID da receita a ser atualizada
+    const { nome, ingredientes, modo_preparo, imagemBase64, privacidade, categoria } = req.body;
 
     try {
-        await clientController.updateLikes(id, likes);
-        res.status(200).json({ msg: 'Likes atualizados com sucesso.' });
-    } catch (error) {
-        console.error('Erro ao atualizar likes:', error);
-        res.status(500).json({ msg: 'Erro ao atualizar likes.' });
-    }
-},
+        // Verifica se a receita existe
+        const receita = await clientController.getReceitasById(id);
 
-updateDislikes: async (req, res) => {
-    const { id, dislikes } = req.body;
-
-    try {
-        await clientController.updateDislikes(id, dislikes);
-        res.status(200).json({ msg: 'Dislikes atualizados com sucesso.' });
-    } catch (error) {
-        console.error('Erro ao atualizar dislikes:', error);
-        res.status(500).json({ msg: 'Erro ao atualizar dislikes.' });
-    }
-},
-
-listReceitasEmAlta: async (req, res) => {
-    try {
-
-        //listar as receitas
-        const receitas = await clientController.getAllReceitas(); 
-
-        //ordenar as receitas por quantidade de like
-        const receitasEmAlta = receitas.sort((a, b) => (b.likes || 0) - (a.likes || 0));
-
-        //puxa as receitas que tem like
-        if (receitasEmAlta.length > 0) {
-            res.status(200).json(receitasEmAlta);
-        } else {
-            res.status(404).json({ msg: "Nenhuma receita em alta encontrada." });
+        if (receita.length === 0) {
+            return res.status(404).json({ msg: "Receita não encontrada." });
         }
+
+        // Chama o model para atualizar a receita
+        await clientController.updateReceita(id, nome, ingredientes, modo_preparo, imagemBase64, privacidade, categoria);
+
+        // Responde com sucesso
+        res.status(200).json({ msg: "Receita atualizada com sucesso!" });
     } catch (error) {
-        console.error("Erro ao buscar receitas em alta:", error);
-        res.status(500).json({ error: "Erro ao obter receitas em alta." });
+        console.error("Erro ao atualizar a receita:", error);
+        res.status(500).json({ msg: "Erro ao atualizar a receita." });
     }
 },
 };

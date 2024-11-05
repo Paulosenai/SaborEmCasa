@@ -8,6 +8,7 @@ import DoceScreen from '../Screens/Categoria/Doce';
 import SemAcucarScreen from '../Screens/Categoria/SemAcucar';
 import ReceitaCategorias from '../Screens/Categoria/ReceitaCategorias';
 import SearchScreen from '../Screens/SearchScreen/SearchScreen';
+import Editrecipe from '../Screens/ReceitasScreen/EditRecipe';
 
 
 import VisualizacaoReceitas from '../Screens/ReceitasScreen/VisualizacaoReceitas';
@@ -40,6 +41,7 @@ export default function StartNavigator() {
           <Stack.Screen name="ReceitaCategorias" component={ReceitaCategorias} />
           <Stack.Screen name="VisualizaçãoReceitas" component={VisualizacaoReceitas} />
           <Stack.Screen name="SearchScreen" component={SearchScreen} />
+          <Stack.Screen name="Editrecipe" component={Editrecipe} />
         </Stack.Navigator>
       </NavigationContainer>
     );

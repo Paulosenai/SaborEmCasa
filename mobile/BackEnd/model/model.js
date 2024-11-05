@@ -100,23 +100,12 @@ const userModel = {
             .catch(erro => console.log(erro));
         return result;
     },
-    updateLikes: async (id, likes) => {
-        const [result] = await connection.query("UPDATE receitascadastradas SET likes = ? WHERE id = ?", [likes, id])
-            .catch(erro => console.log(erro));
-        return result;
-    },
-
-    updateDislikes: async (id, dislikes) => {
-        const [result] = await connection.query("UPDATE receitascadastradas SET dislikes = ? WHERE id = ?", [dislikes, id])
-            .catch(erro => console.log(erro));
-        return result;
-    },
-    
-    getAllReceitasEmAlta: async (limiteLikes) => {
-        const [result] = await connection.query("SELECT * FROM receitascadastradas WHERE likes > ?", [limiteLikes])
-            .catch(error => console.log(error));
-        return result;
-    },
+    updateReceita: async (id, nome, ingredientes, modo_preparo, imagemBase64, privacidade, categoria) => {
+            const [result] = await connection.query(
+                'UPDATE receitascadastradas SET nome = ?, ingredientes = ?, modo_preparo = ?, imagemReceita = ?, privacidade = ?, categoria = ? WHERE id = ?', [nome, ingredientes, modo_preparo, imagemBase64, privacidade, categoria, id])
+                .catch(erro => console.log(erro));
+            return result;
+        },
 };
 
 module.exports = userModel;

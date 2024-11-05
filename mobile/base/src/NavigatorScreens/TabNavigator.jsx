@@ -3,9 +3,9 @@ import { View, Image, StyleSheet } from 'react-native';
 import { Icon } from '@rneui/themed';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home from '../Screens/HomeScreen/HomePage';
-import EmAlta from '../Screens/EmAlta/EmAlta'
-import FavoritoScreen from '../Screens/FavoritosScreen/Favoritos';
+import ContatoScreen from '../Screens/ContatoScreen/Contato';
 import ReceitaScreen from '../Screens/ReceitasScreen/ReceitasUsuarios';
+import favoritosScreen from '../Screens/FavoritosScreen/Favoritos';
 import CadastrarReceitas from '../Screens/CadastroReceitas/CadastrarReceitas';
 
 const Tab = createBottomTabNavigator();
@@ -25,8 +25,8 @@ export function Inicio({route}) {
             iconName = focused ? 'person' : 'person-outline';
           } else if (route.name === 'Favoritos') {
             iconName = focused ? 'heart' : 'heart-outline';
-          } else if (route.name === 'Em alta') {
-            iconName = focused ? 'flame' : 'flame-outline';
+          } else if (route.name === 'Contato') {
+            iconName = focused ? 'call' : 'call-outline';
           }
           
           return (
@@ -75,8 +75,8 @@ export function Inicio({route}) {
         component={CadastrarReceitas} 
       />
 
-      <Tab.Screen initialParams={{ obj }} options={{headerShown: false}} name="Favoritos" component={FavoritoScreen} />
-      <Tab.Screen initialParams={{ obj }} options={{headerShown: false}} name="Em alta" component={EmAlta} />
+      <Tab.Screen initialParams={{ obj }} options={{headerShown: false}} name="Favoritos" component={favoritosScreen} />
+      <Tab.Screen initialParams={{ obj }} options={{headerShown: false}} name="Contato" component={ContatoScreen} />
     </Tab.Navigator>
   );
 }
