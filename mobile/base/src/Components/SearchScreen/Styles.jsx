@@ -65,6 +65,35 @@ const styles = StyleSheet.create({
     searchIcon: {
       marginRight: 10,
     },
+    modalOverlay: { 
+      flex: 1, 
+      justifyContent: 'center', 
+      alignItems: 'center', 
+      backgroundColor: 'rgba(0, 0, 0, 0.5)' 
+    },
+    modalContent: { 
+      backgroundColor: 'white', 
+      width: '80%', 
+      padding: 20, 
+      borderRadius: 10 
+    },
+    categoryButtonsContainer: { 
+      flexDirection: 'row', 
+      flexWrap: 'wrap' 
+    },
+    categoryButton: { 
+      padding: 10, 
+      margin: 5, 
+      backgroundColor: '#ddd', 
+      borderRadius: 5 
+    },
+    categoryButtonText: { 
+      fontSize: 14, 
+      color: '#333' 
+    },
+    selectedCategory: { 
+      backgroundColor: 'orange' 
+    },
 });
 
 export default styles;

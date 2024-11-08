@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Text, Header } from '@rneui/themed';
 import styles from "./Styles";
 import Icon from 'react-native-vector-icons/MaterialIcons';
-
+import { Alert } from "react-native";
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ActivityIndicator } from "react-native-paper";
@@ -17,7 +17,8 @@ function Home({ route }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [favoritedItems, setFavoritedItems] = useState(new Set());
   const [isLoading, setIsLoading] = useState(true);
-
+  const [limit, setLimit] = useState(10);  // Controla o número de receitas exibidas
+  
   useEffect(() => {
     const loadFavorites = async () => {
       try {
@@ -46,20 +47,19 @@ function Home({ route }) {
     }
   };
 
-  // Atualiza os dados a cada 5 segundos
   useEffect(() => {
-    fetchData(); // Carrega os dados imediatamente na primeira renderização
+    fetchData(); 
 
     const intervalId = setInterval(() => {
-      fetchData(); // Atualiza os dados a cada 5 segundos
-    }, 5000); // 5000 ms = 5 segundos
+      fetchData(); 
+    }, 5000); 
 
-    return () => clearInterval(intervalId); // Limpa o intervalo quando o componente for desmontado
+    return () => clearInterval(intervalId); 
   }, []);
 
   const Sidebar = ({ isOpen, onClose }) => {
     const [translateX] = useState(new Animated.Value(300));
-    
+
     useEffect(() => {
       Animated.timing(translateX, {
         toValue: isOpen ? 0 : 300,
@@ -74,13 +74,30 @@ function Home({ route }) {
     };
 
     const handleLogout = async () => {
-      try {
-        await AsyncStorage.removeItem('userData');
-        onClose();
-        navigation.replace('LoginScreen');
-      } catch (error) {
-        console.error('Erro ao realizar logout:', error);
-      }
+      Alert.alert(
+        "Confirmar Logout", 
+        "Você tem certeza que deseja sair da sua conta?",
+        [
+          {
+            text: "Cancelar", 
+            onPress: () => console.log("Logout cancelado"), 
+            style: "cancel", 
+          },
+          {
+            text: "Sim", 
+            onPress: async () => { 
+              try {
+                await AsyncStorage.removeItem('obj');
+                onClose();
+                navigation.replace('LoginScreen'); 
+              } catch (error) {
+                console.error('Erro ao realizar logout:', error);
+              }
+            },
+          },
+        ],
+        { cancelable: false } 
+      );
     };
 
     return (
@@ -145,25 +162,32 @@ function Home({ route }) {
     <SafeAreaView>
       <View style={styles.item}>
         <View style={styles.card}>
+          <TouchableOpacity onPress={() => handleFavoriteToggle(item.id)} style={styles.favoriteIconContainer}>
+            <Icon
+              name={favoritedItems.has(item.id) ? 'favorite' : 'favorite-border'}
+              size={25}
+              color="white"
+              style={styles.favoriteIcon}
+            />
+          </TouchableOpacity>
+
           <TouchableOpacity onPress={() => handleVizualizar(item.id)}>
-            <Image source={{ uri: `data:image/jpeg;base64,${item.imagemReceita}` }} style={styles.image} />
+            <Image
+              source={{ uri: `data:image/jpeg;base64,${item.imagemReceita}` }}
+              style={styles.image}
+            />
             <View style={styles.content}>
               <Text style={styles.title}>{item.nome}</Text>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                <TouchableOpacity onPress={() => handleFavoriteToggle(item.id)}>
-                  <Icon
-                    name={favoritedItems.has(item.id) ? 'favorite' : 'favorite-border'}
-                    size={24}
-                    color="red"
-                  />
-                </TouchableOpacity>
-              </View>
             </View>
           </TouchableOpacity>
         </View>
       </View>
     </SafeAreaView>
   );
+
+  const loadMoreRecipes = () => {
+    setLimit(prevLimit => prevLimit + 10);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -228,15 +252,22 @@ function Home({ route }) {
         {isLoading ? (
           <ActivityIndicator style={{ alignSelf: 'center', width: 150, height: '600' }} color="orange" />
         ) : (
-          <FlatList
-            data={filteredData}
-            renderItem={renderItem}
-            extraData={filteredData}
-            keyExtractor={item => String(item.id)}
-            numColumns={2}
-            columnWrapperStyle={styles.row}
-            scrollEnabled={false}
-          />
+          <>
+            <FlatList
+              data={filteredData.slice(0, limit)}  
+              renderItem={renderItem}
+              extraData={filteredData}
+              keyExtractor={item => String(item.id)}
+              numColumns={2}
+              columnWrapperStyle={styles.row}
+              scrollEnabled={false}
+            />
+            {filteredData.length > limit && (
+              <TouchableOpacity onPress={loadMoreRecipes} style={styles.loadMoreButton}>
+                <Text style={styles.loadMoreText}>Ver mais</Text>
+              </TouchableOpacity>
+            )}
+          </>
         )}
       </ScrollView>
     </SafeAreaView>

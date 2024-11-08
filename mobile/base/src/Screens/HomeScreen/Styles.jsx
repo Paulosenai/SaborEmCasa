@@ -75,11 +75,15 @@ const styles = StyleSheet.create({
   },
   contentCard: {
     margin: 10,
+    flex: 1, 
   },
   titleContent: {
     fontSize: 20,
     fontWeight: 'bold',
+    marginBottom: 10, 
+    flexShrink: 1, 
   },
+  
   card: {
     position: 'relative',
     margin: 7,
@@ -88,6 +92,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     elevation: 4,
     width: 190,
+    height: 250, 
   },
   image: {
     position: 'relative',
@@ -198,6 +203,28 @@ const styles = StyleSheet.create({
   sidebarClosed: {
     transform: [{ translateX: 300 }],
   },
+  favoriteIconContainer: {
+    position: 'absolute', 
+    top: 10,             
+    left: 10,          
+    zIndex: 1,
+  },
+  
+  favoriteIcon: {
+    position: 'absolute', 
+    top: 0,
+    left: 0,
+    zIndex: 1,        
+    borderColor: 'red',
+    borderWidth: 1,
+    padding: 4,
+    borderRadius: 50,
+    backgroundColor: 'red'
+  },
+  loadMoreText: {
+    textAlign: 'center',
+    marginBottom: 30,
+  }
 });
 
 export default styles;
