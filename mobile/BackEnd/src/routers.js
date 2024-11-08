@@ -20,8 +20,6 @@ router.get("/api/readReceitaUser/:id_usuario", clientController.listReceitasUser
 router.get("/api/readReceitaPub", clientController.listReceitasPub); // Listar receitas públicas
 router.get("/api/readReceitaCategoria/:categoria", clientController.listReceitasByCategoria); // Listar receitas por categoria
 router.delete("/api/deleteReceita/:id", clientController.deleteReceita); // Deletar receita
-
-// Rota para atualizar receita
 router.put("/api/updateReceita/:id", clientController.updateReceita); // Atualizar receita
 
 module.exports = router;

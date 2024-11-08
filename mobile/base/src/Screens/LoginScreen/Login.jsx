@@ -67,7 +67,7 @@ const Login = ({ navigation }) => {
   };
 
   const handleNavigateToForgotPassword = () => {
-    navigation.navigate('Esqueceuasenha'); 
+    navigation.navigate('ForgotPassword'); 
   };
 
   const translateY = animation.interpolate({

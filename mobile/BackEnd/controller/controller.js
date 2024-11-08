@@ -1,4 +1,6 @@
 const clientController = require("../model/model");
+const bcrypt = require('bcrypt')
+const saltRounds = 10;
 const jwt = require('jsonwebtoken');
 
 const userController = {
@@ -115,43 +117,42 @@ const userController = {
             }
         }
     },
-     //controller para reset 
-     getEmailReset: async(req, res)=>{
-        let{email} = req.body
-
-        email = email.toLowerCase();
-
-        try{
-            const sql = await clientController.getByEmail(email);
-
-            if(sql.length > 0){
-                res.status(200).json({msg:'Success'})
-            }
-            else{
-                res.status(404).json({msg:"Email nao cadastrado no BD"});
-            }
+     // Controller para reset de senha
+     getEmailReset: async (req, res) => {
+        const { email } = req.body;
+        const emailFormatted = email.trim().toLowerCase(); // Formatar o e-mail para evitar problemas com maiúsculas/minúsculas
+    
+        try {
+          // Verificar se o e-mail está cadastrado
+          const sql = await clientController.getByEmail(emailFormatted);
+    
+          if (sql.length > 0) {
+            res.status(200).json({ msg: "E-mail encontrado. Agora você pode redefinir sua senha." });
+          } else {
+            res.status(404).json({ msg: "E-mail não cadastrado no BD" });
+          }
+        } catch (error) {
+          console.error("Erro ao buscar e-mail:", error);
+          res.status(500).json({ msg: "Erro ao buscar e-mail no banco de dados." });
         }
-        catch(error){
-            if(error){
-                res.status(500).json(error);
-            }
-        }
-    },
+      },
 
-    resetPassword: async(req, res)=>{
-        let{email,senha} = req.body
-
-        email = email.toLowerCase();
-
-        try{
-            const sql = await clientController.updatePassword(email,senha);
-            res.status(200).json({msg:"Senha Atualizada com sucesso"});
+    resetPassword: async (req, res) => {
+        const { email, senha } = req.body;
+        try {
+          const user = await clientController.getByEmail(email.toLowerCase());
+          if (user.length === 0) {
+            return res.status(404).json({ msg: "E-mail não encontrado." });
+          }
+          const hashedPassword = await bcrypt.hash(senha, saltRounds);
+          await clientController.updatePassword(email.toLowerCase(), hashedPassword);
+          return res.status(200).json({ msg: "Senha atualizada com sucesso!" });
+    
+        } catch (error) {
+          console.error("Erro ao resetar a senha:", error);
+          return res.status(500).json({ msg: "Erro no servidor ao resetar a senha." });
         }
-        catch(error){
-           console.log("Erro ao redefinir a senha");
-           res.status(500).json({msg:"Erro no servidor"})
-        }
-    },
+      },
     listAllReceitas: async (req, res) => {
         try {
             const clients = await clientController.getAllReceitas();

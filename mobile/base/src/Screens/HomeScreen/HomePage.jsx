@@ -4,12 +4,12 @@ import { useNavigation } from '@react-navigation/native';
 import { Text, Header } from '@rneui/themed';
 import styles from "./Styles";
 import Icon from 'react-native-vector-icons/MaterialIcons';
+
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ActivityIndicator } from "react-native-paper";
 
 function Home({ route }) {
-  console.log(route.params.obj);
   const navigation = useNavigation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [data, setData] = useState([]);
@@ -32,20 +32,29 @@ function Home({ route }) {
     loadFavorites();
   }, []);
 
+  // Função para carregar os dados das receitas
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(`http://10.0.2.2:8085/api/readReceitaPub`);
+      const sortedData = response.data.sort((a, b) => a.id - b.id);
+      setData(sortedData);
+      setFilteredData(sortedData);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Atualiza os dados a cada 5 segundos
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(`http://10.0.2.2:8085/api/readReceitaPub`);
-        const sortedData = response.data.sort((a, b) => a.id - b.id);
-        setData(sortedData);
-        setFilteredData(sortedData);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchData();
+    fetchData(); // Carrega os dados imediatamente na primeira renderização
+
+    const intervalId = setInterval(() => {
+      fetchData(); // Atualiza os dados a cada 5 segundos
+    }, 5000); // 5000 ms = 5 segundos
+
+    return () => clearInterval(intervalId); // Limpa o intervalo quando o componente for desmontado
   }, []);
 
   const Sidebar = ({ isOpen, onClose }) => {
@@ -60,7 +69,7 @@ function Home({ route }) {
     }, [isOpen]);
 
     const navigateToScreen = (screenName) => {
-      navigation.navigate(screenName);
+      navigation.navigate(screenName, { obj: route.params.obj });
       onClose();
     };
 
@@ -76,18 +85,24 @@ function Home({ route }) {
 
     return (
       <Animated.View style={[styles.sidebarContainer, { transform: [{ translateX }] }]}>
-        <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-          <Text style={styles.closeButtonText}>Fechar</Text>
-        </TouchableOpacity>
+        <View style={styles.userInfoContainer}>
+          <View style={styles.avatarContainer}>
+            <Icon name="account-circle" size={40} color="#fff" style={styles.avatarIcon} />
+            <Text style={styles.userName}>{route.params.obj.nome}</Text>
+          </View>
+          <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+            <Icon name="close" size={30} color="#fff" />
+          </TouchableOpacity>
+        </View>
+
         <View style={styles.sidebarContent}>
-          <Text style={styles.sidebarTitle}>Bem-vindo, {route.params.obj.nome}</Text>
-          <TouchableOpacity style={styles.sidebarItem} onPress={() => navigateToScreen('LoginScreen')}>
-            <Text style={styles.sidebarItemText}>Login</Text>
+          <TouchableOpacity style={styles.sidebarItem} onPress={() => navigateToScreen('Profile')}>
+            <Icon name="person" size={24} color="#fff" style={styles.sidebarItemIcon} />
+            <Text style={styles.sidebarItemText}>Meus Dados</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.sidebarItem} onPress={() => navigateToScreen('RegisterScreen')}>
-            <Text style={styles.sidebarItemText}>Registrar</Text>
-          </TouchableOpacity>
+
           <TouchableOpacity style={styles.sidebarItem} onPress={handleLogout}>
+            <Icon name="logout" size={24} color="#fff" style={styles.sidebarItemIcon} />
             <Text style={styles.sidebarItemText}>Logout</Text>
           </TouchableOpacity>
         </View>

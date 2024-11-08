@@ -167,9 +167,33 @@ const styles = StyleSheet.create({
       fontSize: 16,
       color: '#f2f2f2',
       marginTop: 20,
+    },actions: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
     },
-
-    
+    iconContainer: {
+      flexDirection: 'row', 
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+    },
+    headerContainer: {
+      backgroundColor: 'orange', 
+      padding: 15,
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    backButton: {
+      marginTop: 20,
+      padding: 10,
+      marginRight: 70,
+    },
+    headerTitle: {
+      marginTop: 20,
+      color: 'white',
+      fontSize: 20,
+      fontWeight: 'bold',
+    },
 });
 
 export default styles;

@@ -7,40 +7,6 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
 import { ActivityIndicator } from "react-native-paper";
 
-const Sidebar = ({ isOpen, onClose }) => {
-  const [translateX] = useState(new Animated.Value(300));
-
-  useEffect(() => {
-    Animated.timing(translateX, {
-      toValue: isOpen ? 0 : 300,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
-  }, [isOpen]);
-
-  const navigation = useNavigation();
-  const navigateToScreen = (screenName) => {
-    navigation.navigate(screenName);
-    onClose();
-  };
-
-  return (
-    <Animated.View style={[styles.sidebarContainer, { transform: [{ translateX }] }]}>
-      <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-        <Text style={styles.closeButtonText}>Fechar</Text>
-      </TouchableOpacity>
-      <View style={styles.sidebarContent}>
-        <Text style={styles.sidebarTitle}>Login</Text>
-        <TouchableOpacity style={styles.sidebarItem} onPress={() => navigateToScreen('LoginScreen')}>
-          <Text style={styles.sidebarItemText}>Login</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.sidebarItem} onPress={() => navigateToScreen('RegisterScreen')}>
-          <Text style={styles.sidebarItemText}>Registrar</Text>
-        </TouchableOpacity>
-      </View>
-    </Animated.View>
-  );
-};
 
 const ReceitasUsuario = ({ route }) => {
   const navigation = useNavigation();
@@ -62,15 +28,12 @@ const ReceitasUsuario = ({ route }) => {
   }, [id_usuario]);
 
   useEffect(() => {
-    // Fetch the data initially
     fetchData().finally(() => setIsLoading(false));
-
-    // Set up interval to fetch data every 5 seconds
     const interval = setInterval(() => {
       fetchData();
     }, 5000);
 
-    // Cleanup interval when component is unmounted
+
     return () => clearInterval(interval);
   }, [fetchData]);
 
@@ -117,12 +80,14 @@ const ReceitasUsuario = ({ route }) => {
           <View style={styles.content}>
             <Text style={styles.title}>{item.nome}</Text>
             <View style={styles.actions}>
-              <TouchableOpacity onPress={() => deleteRecipe(item.id)}>
-                <Icon name="delete" size={24} color="red" />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => handleEdit(item)}>
-                <Icon name="edit" size={24} color="blue" />
-              </TouchableOpacity>
+              <View style={styles.iconContainer}>
+                <TouchableOpacity onPress={() => deleteRecipe(item.id)} style={styles.iconWrapper}>
+                  <Icon name="delete" size={24} color="red" />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => handleEdit(item)} style={styles.iconWrapper}>
+                  <Icon name="edit" size={24} color="blue" />
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         </TouchableOpacity>
@@ -136,27 +101,13 @@ const ReceitasUsuario = ({ route }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header
-        backgroundColor="#FFA92C"
-        barStyle="light-content"
-        leftComponent={
-          <View style={styles.headerComponentContainer}>
-            <Image source={require('../../../res/img/logo2.png')} style={{ width: 90, height: 50 }} />
-          </View>
-        }
-        rightComponent={(
-          <View style={styles.headerIconsContainer}>
-            <Icon
-              name="person"
-              size={30}
-              color="#fff"
-              onPress={toggleSidebar}
-              style={{ position: "absolute", left: 30, }}
-            />
-          </View>
-        )}
-      />
-      <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
+      <View style={styles.headerContainer}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Icon name="arrow-back" size={20} color="#fff" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Receitas do Usuario</Text>
+      </View>
+     
       <ScrollView>
         <View style={styles.section}>
           <View style={styles.newsCard}>
@@ -172,7 +123,7 @@ const ReceitasUsuario = ({ route }) => {
         ) : (
           filteredData.length === 0 ? (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', height: 400 }}>
-              <Text style={{ fontSize: 18, color: '#333' }}>Cadastre sua receita</Text>
+              <Text style={{ fontSize: 18, color: 'gray' }}>Cadastre sua receita</Text>
             </View>
           ) : (
             <FlatList

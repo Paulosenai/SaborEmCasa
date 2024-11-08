@@ -21,11 +21,9 @@ const EditRecipe = ({ route, navigation }) => {
   const [nome, setNome] = useState(recipe.nome);
   const [ingredientes, setIngredientes] = useState(recipe.ingredientes);
   const [modoPreparo, setModoPreparo] = useState(recipe.modo_preparo);
-  const [imagem, setImagem] = useState(null); // Inicia com null (sem imagem)
-  const [categoria, setCategoria] = useState(recipe.categoria || 'bebida');
-  const [privacidade, setPrivacidade] = useState(recipe.privacidade || 'publica');
-  const [value, setValue] = useState('');
-  const [status, setStatus] = useState('');
+  const [imagem, setImagem] = useState(null); 
+  const [categoria, setCategoria] = useState(null);
+  const [status, setStatus] = useState(recipe.privacidade || 'publico'); 
 
   // Função para abrir a galeria e selecionar a imagem
   const handleImagePicker = () => {
@@ -42,23 +40,43 @@ const EditRecipe = ({ route, navigation }) => {
         console.error("Erro ao abrir a galeria:", response.errorMessage);
       } else if (response.assets && response.assets.length > 0) {
         const selectedImage = response.assets[0];
-        setImagem(selectedImage.uri); // Definir a imagem selecionada
+        setImagem(selectedImage.uri); 
       }
     });
   };
 
   const handleSave = async () => {
-    try {
-      // Validação dos campos
-      if (!nome || !ingredientes || !modoPreparo) {
-        Alert.alert('Campos obrigatórios', 'Por favor, preencha todos os campos obrigatórios.');
-        return;
-      }
+    // Verificação de todos os campos obrigatórios
+    if (!nome) {
+      Alert.alert('Campo Obrigatório', 'Por favor, preencha o nome da receita.');
+      return;
+    }
+    if (!ingredientes) {
+      Alert.alert('Campo Obrigatório', 'Por favor, adicione os ingredientes.');
+      return;
+    }
+    if (!modoPreparo) {
+      Alert.alert('Campo Obrigatório', 'Por favor, descreva o modo de preparo.');
+      return;
+    }
+    if (!categoria) {
+      Alert.alert('Campo Obrigatório', 'Por favor, selecione uma categoria.');
+      return;
+    }
+    if (!status) {
+      Alert.alert('Campo Obrigatório', 'Por favor, selecione a privacidade da receita.');
+      return;
+    }
+    if (!imagem) {
+      Alert.alert('Campo Obrigatório', 'Por favor, adicione uma imagem para a receita.');
+      return;
+    }
 
+    try {
       // Se a imagem for válida, converta-a para base64
       let imageData = null;
       if (imagem) {
-        imageData = await RNFS.readFile(imagem, 'base64'); // Passar o URI da imagem
+        imageData = await RNFS.readFile(imagem, 'base64'); 
       }
 
       const updatedRecipe = {
@@ -66,9 +84,9 @@ const EditRecipe = ({ route, navigation }) => {
         nome,
         ingredientes,
         modo_preparo: modoPreparo,
-        categoria: value,
-        privacidade: status,
-        imagemBase64: imageData, // Enviar a imagem em base64, caso tenha sido selecionada
+        categoria: categoria,  
+        privacidade: status,  
+        imagemBase64: imageData,
       };
 
       const response = await axios.put(`http://10.0.2.2:8085/api/updateReceita/${recipe.id}`, updatedRecipe);
@@ -91,97 +109,94 @@ const EditRecipe = ({ route, navigation }) => {
 
   return (
     <SafeAreaView>
-        <ScrollView>
-    <View style={styles.container}>
-      <View style={styles.cadastroContainer}>
-        <Text style={styles.title}>Editar Receita</Text>
-        <Button
-          onPress={handleImagePicker}
-          style={{
-            backgroundColor: '#fff',
-            width: '100%',
-            height: 200,
-            alignSelf: 'center',
-            alignItems: 'center',
-            marginBottom: 20,
-          }}
-        >
-          <Image
-            style={{ width: 170, height: 150, resizeMode: 'contain' }}
-            source={
-              imagem 
-                ? { uri: imagem }  // Se o usuário selecionou uma imagem, exibe a imagem selecionada
-                : require('../../../res/img/imageIcon.png') // Caso contrário, exibe a imagem padrão
-            }
-          />
-        </Button>
+      <ScrollView>
+        <View style={styles.container}>
+          <View style={styles.cadastroContainer}>
+            <Text style={styles.title}>Editar Receita</Text>
+            <Button
+              onPress={handleImagePicker}
+              style={{
+                backgroundColor: '#fff',
+                width: '100%',
+                height: 200,
+                alignSelf: 'center',
+                alignItems: 'center',
+                marginBottom: 20,
+              }}
+            >
+              <Image
+                style={{ width: 170, height: 150, resizeMode: 'contain' }}
+                source={
+                  imagem 
+                    ? { uri: imagem }  // Se o usuário selecionou uma imagem, exibe a imagem selecionada
+                    : require('../../../res/img/imageIcon.png') // Caso contrário, exibe a imagem padrão
+                }
+              />
+            </Button>
 
-        <TextInput
-          style={styles.input}
-          placeholder="Nome da Receita"
-          value={nome}
-          onChangeText={setNome}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Ingredientes"
-          value={ingredientes}
-          onChangeText={setIngredientes}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Modo de Preparo"
-          value={modoPreparo}
-          onChangeText={setModoPreparo}
-        />
+            <TextInput
+              style={styles.input}
+              placeholder="Nome da Receita"
+              value={nome}
+              onChangeText={setNome}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Ingredientes"
+              value={ingredientes}
+              onChangeText={setIngredientes}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Modo de Preparo"
+              value={modoPreparo}
+              onChangeText={setModoPreparo}
+            />
 
-        {/* Categoria Dropdown */}
-        <Text style={styles.label}>Categoria</Text>
-        <Dropdown
-          data={categories}
-          value={categoria}
-          onChange={item => setValue(item.value)}
-          labelField="label"
-          valueField="value"
-          placeholder="Selecione uma categoria"
-          style={styles.dropdown}
-        />
+            {/* Categoria Dropdown */}
+            <Text style={styles.label}>Categoria</Text>
+            <Dropdown
+              data={categories}
+              value={categoria}
+              onChange={item => setCategoria(item.value)}  
+              labelField="label"
+              valueField="value"
+              placeholder="Selecione uma categoria"
+              style={styles.dropdown}
+            />
 
-
-        <Text style={styles.label}>Privacidade</Text>
-        <SegmentedButtons
-            value={status}
-            onValueChange={value => {
-              setStatus(value);
-            }}
-            buttons={[
-              {
-                value: 'privado',
-                label: 'Privado',
-                style: {
-                  backgroundColor: status === 'privado' ? '#FFA92C' : 'transparent',
-                  color: status === 'privado' ? '#fff' : '#000',
+            <Text style={styles.label}>Privacidade</Text>
+            <SegmentedButtons
+              value={status}
+              onValueChange={setStatus}  
+              buttons={[
+                {
+                  value: 'privado',
+                  label: 'Privado',
+                  style: {
+                    backgroundColor: status === 'privado' ? '#FFA92C' : 'transparent',
+                    color: status === 'privado' ? '#fff' : '#000',
+                  },
                 },
-              },
-              {
-                value: 'publico',
-                label: 'Público',
-                style: {
-                  backgroundColor: status === 'publico' ? '#FFA92C' : 'transparent',
-                  color: status === 'publico' ? '#fff' : '#000',
+                {
+                  value: 'publico',
+                  label: 'Público',
+                  style: {
+                    backgroundColor: status === 'publico' ? '#FFA92C' : 'transparent',
+                    color: status === 'publico' ? '#fff' : '#000',
+                  },
                 },
-              },
-            ]}
-          />
+              ]}
+            />
 
-        <View style={styles.buttonContainer}>
-          <View style={styles.receitaButton}>
-            <Text style={styles.buttonText} onPress={handleSave}>Salvar Receita</Text>
+            <View style={styles.buttonContainer}>
+              <View style={styles.receitaButton}>
+                <Text style={styles.buttonText} onPress={handleSave}>Salvar Receita</Text>
+              </View>
+            </View>
           </View>
         </View>
-      </View>
-    </View>
-    </ScrollView>
+      </ScrollView>
     </SafeAreaView>
   );
 };

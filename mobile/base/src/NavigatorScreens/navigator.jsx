@@ -7,8 +7,9 @@ import BebidaScreen from '../Screens/Categoria/Bebida';
 import DoceScreen from '../Screens/Categoria/Doce';
 import SemAcucarScreen from '../Screens/Categoria/SemAcucar';
 import ReceitaCategorias from '../Screens/Categoria/ReceitaCategorias';
-import SearchScreen from '../Screens/SearchScreen/SearchScreen';
-import Editrecipe from '../Screens/ReceitasScreen/EditRecipe';
+import SearchScreen from '../Components/SearchScreen/SearchScreen';
+import Editrecipe from '../Components/EditRecipe/EditRecipe';
+import Profile from '../Components/MeusDados/Profile';
 
 
 import VisualizacaoReceitas from '../Screens/ReceitasScreen/VisualizacaoReceitas';
@@ -16,6 +17,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { TransitionPresets } from '@react-navigation/stack';
 import { Inicio } from './TabNavigator';
+import ForgotPassword from '../Components/ResetPassword/ResetPassword';
 
 const Stack = createStackNavigator();
 
@@ -42,6 +44,8 @@ export default function StartNavigator() {
           <Stack.Screen name="VisualizaçãoReceitas" component={VisualizacaoReceitas} />
           <Stack.Screen name="SearchScreen" component={SearchScreen} />
           <Stack.Screen name="Editrecipe" component={Editrecipe} />
+          <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+          <Stack.Screen name="Profile" component={Profile} />
         </Stack.Navigator>
       </NavigationContainer>
     );

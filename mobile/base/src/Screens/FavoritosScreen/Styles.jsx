@@ -56,6 +56,17 @@ const styles = StyleSheet.create({
     color: '#007BFF',
     fontSize: 14,
   },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  emptyText: {
+    fontSize: 18,
+    color: 'gray',
+    textAlign: 'center',
+  }
 });
 
 export default styles;

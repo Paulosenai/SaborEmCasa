@@ -47,7 +47,7 @@ const userModel = {
         return result;
     },
     getReceitasCategoria: async (categoria) => {
-        const [result] = await connection.query("SELECT * FROM receitascadastradas WHERE categoria = ?", [categoria])
+        const [result] = await connection.query("SELECT * FROM receitascadastradas WHERE categoria = ? AND privacidade = 'publico'", [categoria])
             .catch(erro => console.log(erro));
         return result;
     },
@@ -104,7 +104,7 @@ const userModel = {
             const [result] = await connection.query(
                 'UPDATE receitascadastradas SET nome = ?, ingredientes = ?, modo_preparo = ?, imagemReceita = ?, privacidade = ?, categoria = ? WHERE id = ?', [nome, ingredientes, modo_preparo, imagemBase64, privacidade, categoria, id])
                 .catch(erro => console.log(erro));
-            return result;
+        return result;
         },
 };
 

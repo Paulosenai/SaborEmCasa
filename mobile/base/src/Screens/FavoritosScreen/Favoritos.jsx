@@ -81,14 +81,21 @@ const Favorites = () => {
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Receitas Favoritas</Text>
       </View>
-      <View style={styles.listContainer}>
-        <FlatList
-          data={favorites}
-          renderItem={renderItem}
-          keyExtractor={item => String(item.id)}
-          numColumns={2}
-        />
-      </View>
+
+      {favorites.length === 0 ? (
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyText}>Nenhuma receita favoritada ainda.</Text>
+        </View>
+      ) : (
+        <View style={styles.listContainer}>
+          <FlatList
+            data={favorites}
+            renderItem={renderItem}
+            keyExtractor={item => String(item.id)}
+            numColumns={2}
+          />
+        </View>
+      )}
     </SafeAreaView>
   );
 };
