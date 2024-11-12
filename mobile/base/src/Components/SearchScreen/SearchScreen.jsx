@@ -8,9 +8,9 @@ const SearchScreen = ({ navigation, route }) => {
   const [searchQuery, setSearchQuery] = useState(route.params?.query || '');
   const [results, setResults] = useState([]);
   const [allRecipes, setAllRecipes] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(''); // Armazenar a categoria selecionada
-  const [categories, setCategories] = useState([]); // Armazenar as categorias disponíveis
-  const [showCategories, setShowCategories] = useState(false); // Controlar a exibição do drop-down
+  const [selectedCategory, setSelectedCategory] = useState(''); 
+  const [categories, setCategories] = useState([]);
+  const [showCategories, setShowCategories] = useState(false); 
 
   // Função para buscar todas as receitas
   const fetchAllRecipes = async () => {
@@ -85,12 +85,6 @@ const SearchScreen = ({ navigation, route }) => {
           <TouchableOpacity style={styles.modalOverlay} onPress={() => setShowCategories(false)}>
             <View style={styles.modalContent}>
               <ScrollView>
-                <TouchableOpacity
-                  style={[styles.categoryButton, selectedCategory === '' && styles.selectedCategory]}
-                  onPress={() => { setSelectedCategory(''); setShowCategories(false); }}
-                >
-                  <Text style={styles.categoryButtonText}>Limpar Filtro</Text>
-                </TouchableOpacity>
                 {categories.map((category, index) => (
                   <TouchableOpacity
                     key={index}

@@ -22,7 +22,7 @@ const MeusDadosScreen = ({ route, navigation }) => {
       {/* Profile Section */}
       <View style={styles.profileContainer}>
         <Image
-          source={{ uri: 'https://www.w3schools.com/w3images/avatar2.png' }} // Substitua com a URL ou imagem do avatar do usuário
+          source={require('../../../res/img/USER.png')}
           style={styles.avatar}
         />
         <Text style={styles.userName}>{obj.nome}</Text>
