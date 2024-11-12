@@ -76,23 +76,30 @@ export default function Semacucar({route}) {
 
 
   const renderItem = ({ item }) => (
-    <View style={styles.item}>
-      <View style={styles.card}>
-        <TouchableOpacity onPress={() => handleVizualizar(item.id)}>
-        <Image source={{uri: `data:image/jpeg;base64,${item.imagemReceita}`}} style={styles.image} />
-          <View style={styles.content}>
-            <Text style={styles.title}>{item.nome}</Text>
-            <TouchableOpacity onPress={() => handleFavoriteToggle(item.id)}>
-              <Icon
-                name={favoritedItems.has(item.id) ? 'favorite' : 'favorite-border'}
-                size={24}
-                color="red"
-              />
-            </TouchableOpacity>
-          </View>
-        </TouchableOpacity>
+    <SafeAreaView>
+      <View style={styles.item}>
+        <View style={styles.card}>
+          <TouchableOpacity onPress={() => handleFavoriteToggle(item.id)} style={styles.favoriteIconContainer}>
+            <Icon
+              name={favoritedItems.has(item.id) ? 'favorite' : 'favorite-border'}
+              size={25}
+              color="white"
+              style={styles.favoriteIcon}
+            />
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => handleVizualizar(item.id)}>
+            <Image
+              source={{ uri: `data:image/jpeg;base64,${item.imagemReceita}` }}
+              style={styles.image}
+            />
+            <View style={styles.content}>
+              <Text style={styles.title}>{item.nome}</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 
   return (

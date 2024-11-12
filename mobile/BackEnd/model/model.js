@@ -106,6 +106,13 @@ const userModel = {
                 .catch(erro => console.log(erro));
         return result;
         },
+    updatePassword: async(email,senha)=>{
+            const hashpassword = await bcrypt.hash(senha, salt);
+            const result = await connection.query("UPDATE cadastro_usuarios SET senha=? WHERE email=?",
+            [hashpassword, email])
+            .catch(error => console.log(error))
+            return result;
+        },
 };
 
 module.exports = userModel;

@@ -34,7 +34,6 @@ const Favorites = () => {
 
   useEffect(() => {
     loadRecipesAndFavorites();
-
     const interval = setInterval(() => {
       loadRecipesAndFavorites();
     }, 1500);

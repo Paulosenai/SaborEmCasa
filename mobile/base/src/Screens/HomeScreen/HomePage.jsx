@@ -137,9 +137,7 @@ function Home({ route }) {
       updatedFavorites.add(itemId);
       console.log("Receita adicionada aos favoritos.");
     }
-
     setFavoritedItems(updatedFavorites);
-
     try {
       await AsyncStorage.setItem('favoritedItems', JSON.stringify([...updatedFavorites]));
     } catch (error) {

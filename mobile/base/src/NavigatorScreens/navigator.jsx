@@ -46,6 +46,7 @@ export default function StartNavigator() {
           <Stack.Screen name="Editrecipe" component={Editrecipe} />
           <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
           <Stack.Screen name="Profile" component={Profile} />
+         
         </Stack.Navigator>
       </NavigationContainer>
     );

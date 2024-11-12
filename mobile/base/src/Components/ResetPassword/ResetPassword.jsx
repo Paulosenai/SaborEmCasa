@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, Alert, StyleSheet, Text, SafeAreaView, TouchableOpacity } from 'react-native';
+import { View, TextInput, Alert, StyleSheet, Text, SafeAreaView, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 
 
@@ -45,7 +45,7 @@ const ForgotPassword = ({ navigation }) => {
     setLoading(true); 
 
     try {
-      const response = await axios.post('http://10.0.2.2:8085/api/resetpassword', { email, password });
+      const response = await axios.put('http://10.0.2.2:8085/api/resetpassword', { email, password });
 
       if (response.status === 200) {
         Alert.alert('Sucesso', 'Senha alterada com sucesso!');

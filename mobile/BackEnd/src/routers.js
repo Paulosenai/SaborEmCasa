@@ -11,7 +11,7 @@ router.put("/api/update/paulo/cesar/:id", clientController.updateUser); // Atual
 router.post("/api/registerUser", clientController.register); // Cadastrar um novo usuário
 router.post("/api/validate", clientController.login); // Validar o login 
 router.post("/api/reset", clientController.getEmailReset); // Verificar o email de reset
-router.post("/api/resetpassword", clientController.resetPassword); // Resetar a senha
+router.put("/api/resetpassword", clientController.resetPassword); // Resetar a senha
 router.post('/api/cadastrarReceitas', clientController.CadastrarReceita); // Cadastrar uma receita
 router.get("/api/readReceitas/", clientController.listAllReceitas); // Listar todas as receitas
 router.get("/api/readFavs/:id_usuario", clientController.listFavoritosUser); // Listar favoritos de um usuário

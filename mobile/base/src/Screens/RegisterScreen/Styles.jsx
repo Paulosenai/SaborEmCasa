@@ -23,6 +23,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   boxlogin: {
+    fontWeight: 'bold',
     padding: 10,
     borderWidth: 3,
     borderColor: '#FFA92C',
@@ -66,19 +67,45 @@ const styles = StyleSheet.create({
     width: 400,
     height: 250,
   },
-  errorContainer: {
-    marginVertical: 10,
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContainer: {
+    width: '80%',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalSuccess: {
+    backgroundColor: '#fff',
+    borderColor: 'orange',
+    borderWidth: 5,
+  },
+  modalError: {
+    backgroundColor: '#fff',
+    borderColor: 'orange',
+    borderWidth: 5,
+  },
+  modalMessage: {
+    color: 'gray',
+    fontSize: 18,
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  modalButton: {
+    backgroundColor: 'white',
     padding: 10,
-    backgroundColor: '#F8D7DA', // Cor de fundo leve para a mensagem de erro
-    borderColor: '#F5C6CB', // Cor da borda
-    borderWidth: 1,
     borderRadius: 5,
-},
-errorText: {
-    color: '#721C24', // Cor do texto de erro
+    borderWidth: 1,
+    borderColor: 'orange',
+  },
+  modalButtonText: {
+    color: '#FFA92C',
     fontSize: 16,
-    textAlign: 'center', // Centralizar o texto
-},   
+  },
 });
 
 export default styles;

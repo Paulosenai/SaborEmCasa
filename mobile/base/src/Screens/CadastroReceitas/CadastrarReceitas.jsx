@@ -7,6 +7,8 @@ import {
   Image,
   ImageBackground,
   ScrollView,
+  Modal,
+  TouchableOpacity,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import RNFS from 'react-native-fs';
@@ -25,7 +27,11 @@ export default function CadastrarReceitas({ navigation, route }) {
   const [imagem, setImagem] = useState(null);
   const [value, setValue] = useState('');
   const [status, setStatus] = useState('');
-  const userData = route.params.obj
+  const [isModalVisible, setIsModalVisible] = useState(false); // Controle de visibilidade da modal
+  const [modalMessage, setModalMessage] = useState(''); // Mensagem da modal
+  const [modalType, setModalType] = useState('error'); // Tipo de modal ('error' por padrão)
+
+  const userData = route.params.obj;
   const id_usuario = route.params.obj.id;
 
   const handleImageLibraryLaunch = async () => {
@@ -36,38 +42,47 @@ export default function CadastrarReceitas({ navigation, route }) {
 
     try {
       const response = await launchImageLibrary(options);
-      console.warn('Responda da galeria:', response); 
-      
+      console.warn('Resposta da galeria:', response);
+
       if (response.didCancel) {
-        Alert.alert('Seleção de Imagem', 'Você cancelou a seleção da imagem.');
-        console.warn('Usuário cancelou a seleção da imagem.');
+        setModalMessage('Você cancelou a seleção da imagem.');
+        setModalType('error');
+        setIsModalVisible(true); // Exibe a modal de erro
       } else if (response.error) {
-        Alert.alert('Erro', 'Erro ao abrir a galeria. Tente novamente.');
-        console.error('Erro ao abrir a galeria:', response.error); 
+        setModalMessage('Erro ao abrir a galeria. Tente novamente.');
+        setModalType('error');
+        setIsModalVisible(true); // Exibe a modal de erro
       } else if (response.assets && response.assets.length > 0) {
         const image = response.assets[0];
         setImagem(image);
-        console.warn('Imagem selecionada:', image); 
+        console.warn('Imagem selecionada:', image);
       } else {
-        Alert.alert('Nenhuma imagem selecionada', 'Por favor, selecione uma imagem.');
-        console.warn('Nenhuma imagem foi selecionada.'); 
+        setModalMessage('Nenhuma imagem selecionada. Por favor, selecione uma imagem.');
+        setModalType('error');
+        setIsModalVisible(true); // Exibe a modal de erro
       }
     } catch (error) {
       console.error('Erro ao selecionar a imagem:', error);
-      Alert.alert('Erro', 'Ocorreu um erro ao tentar selecionar a imagem.');
+      setModalMessage('Ocorreu um erro ao tentar selecionar a imagem. Tente novamente.');
+      setModalType('error');
+      setIsModalVisible(true); // Exibe a modal de erro
     }
   };
 
   const handleSubmit = async () => {
     if (!nome || !ingredientes || !modoPreparo || !value || !status) {
-      Alert.alert('Campos obrigatórios', 'Por favor, preencha todos os campos obrigatórios.');
+      setModalMessage('Por favor, preencha todos os campos obrigatórios.');
+      setModalType('error');
+      setIsModalVisible(true); // Exibe a modal de erro
       console.warn('Campos obrigatórios não preenchidos.');
       return;
     }
 
     if (!imagem) {
-      Alert.alert('Imagem necessária', 'Por favor, selecione uma imagem para sua receita.');
-      console.warn('Tentativa de envio sem imagem.'); 
+      setModalMessage('Por favor, selecione uma imagem para sua receita.');
+      setModalType('error');
+      setIsModalVisible(true); // Exibe a modal de erro
+      console.warn('Tentativa de envio sem imagem.');
       return;
     }
 
@@ -84,7 +99,7 @@ export default function CadastrarReceitas({ navigation, route }) {
         id_usuario: id_usuario,
       };
 
-      console.warn('Dados da receita que serão enviados:', data); 
+      console.warn('Dados da receita que serão enviados:', data);
 
       const config = {
         headers: {
@@ -94,11 +109,11 @@ export default function CadastrarReceitas({ navigation, route }) {
       const apiUrl = 'http://10.0.2.2:8085/api/cadastrarReceitas';
 
       const response = await axios.post(apiUrl, data, config);
-      console.warn('Resposta da API:', response); 
+      console.warn('Resposta da API:', response);
 
       if (response.status === 201) {
         Alert.alert('Sucesso', 'Receita cadastrada com sucesso!');
-        navigation.push('TabScreen', {userData}); 
+        navigation.push('TabScreen', { userData });
         setNome('');
         setIngredientes('');
         setModoPreparo('');
@@ -106,16 +121,19 @@ export default function CadastrarReceitas({ navigation, route }) {
         setValue('');
         setStatus('');
       } else {
-        console.warn('Receita não cadastrada. Status da resposta:', response.status); 
-        Alert.alert('Erro', 'Ocorreu um erro ao cadastrar a receita. Por favor, tente novamente.');
+        setModalMessage('Ocorreu um erro ao cadastrar a receita. Tente novamente.');
+        setModalType('error');
+        setIsModalVisible(true); // Exibe a modal de erro
       }
     } catch (error) {
       console.error('Erro ao cadastrar a receita:', error);
-      Alert.alert('Erro', 'Ocorreu um erro ao cadastrar a receita. Por favor, tente novamente.');
+      setModalMessage('Ocorreu um erro ao cadastrar a receita. Tente novamente.');
+      setModalType('error');
+      setIsModalVisible(true); // Exibe a modal de erro
     }
   };
 
-  const renderItem = item => {
+  const renderItem = (item) => {
     return (
       <View style={styles.item}>
         <Text style={styles.textItem}>{item.label}</Text>
@@ -154,7 +172,7 @@ export default function CadastrarReceitas({ navigation, route }) {
         <View style={styles.section}>
           <View style={styles.newsCard}>
             <ImageBackground
-              source={require("../../../res/img/adicionarReceitas.png")}
+              source={require('../../../res/img/adicionarReceitas.png')}
               style={styles.newsImage}
             />
           </View>
@@ -177,10 +195,7 @@ export default function CadastrarReceitas({ navigation, route }) {
             placeholder="Nome:"
             placeholderTextColor="#FFA92C"
             value={nome}
-            onChangeText={text => {
-              setNome(text);
-             
-            }}
+            onChangeText={text => setNome(text)}
           />
 
           <Text style={styles.title}>Ingredientes para a receita:</Text>
@@ -189,9 +204,7 @@ export default function CadastrarReceitas({ navigation, route }) {
             placeholder="Ingredientes:"
             placeholderTextColor="#FFA92C"
             value={ingredientes}
-            onChangeText={text => {
-              setIngredientes(text);
-            }}
+            onChangeText={text => setIngredientes(text)}
             multiline
             numberOfLines={4}
           />
@@ -202,10 +215,7 @@ export default function CadastrarReceitas({ navigation, route }) {
             placeholder="Modo de Preparo:"
             placeholderTextColor="#FFA92C"
             value={modoPreparo}
-            onChangeText={text => {
-              setModoPreparo(text);
- 
-            }}
+            onChangeText={text => setModoPreparo(text)}
             multiline
             numberOfLines={4}
           />
@@ -224,19 +234,13 @@ export default function CadastrarReceitas({ navigation, route }) {
             placeholder="Categoria"
             searchPlaceholder="Procurar..."
             value={value}
-            onChange={item => {
-              setValue(item.value);
-          
-            }}
+            onChange={item => setValue(item.value)}
             renderItem={renderItem}
           />
 
           <SegmentedButtons
             value={status}
-            onValueChange={value => {
-              setStatus(value);
-              
-            }}
+            onValueChange={value => setStatus(value)}
             buttons={[
               {
                 value: 'privado',
@@ -269,6 +273,26 @@ export default function CadastrarReceitas({ navigation, route }) {
           </View>
         </View>
       </ScrollView>
+
+      {/* Modal de Erro */}
+      <Modal
+        visible={isModalVisible}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setIsModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContainer, modalType === 'error' ? styles.modalError : styles.modalSuccess]}>
+            <Text style={styles.modalMessage}>{modalMessage}</Text>
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={() => setIsModalVisible(false)}
+            >
+              <Text style={styles.modalButtonText}>OK</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
