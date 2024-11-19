@@ -108,7 +108,7 @@ const userModel = {
         },
     updatePassword: async(email,senha)=>{
             const hashpassword = await bcrypt.hash(senha, salt);
-            const result = await connection.query("UPDATE cadastro_usuarios SET senha=? WHERE email=?",
+            const result = await connection.query("UPDATE usuariosCadastrados SET senha=? WHERE email=?",
             [hashpassword, email])
             .catch(error => console.log(error))
             return result;

@@ -143,8 +143,8 @@ const EditRecipe = ({ route, navigation }) => {
                 style={{ width: 170, height: 150, resizeMode: 'contain' }}
                 source={
                   imagem 
-                    ? { uri: imagem }  // Se o usuário selecionou uma imagem, exibe a imagem selecionada
-                    : require('../../../res/img/imageIcon.png') // Caso contrário, exibe a imagem padrão
+                    ? { uri: imagem }  
+                    : require('../../../res/img/imageIcon.png') 
                 }
               />
             </Button>
@@ -233,7 +233,6 @@ const EditRecipe = ({ route, navigation }) => {
   );
 };
 
-// Estilo aplicado diretamente na página
 const styles = StyleSheet.create({
   container: {
     margin: 10,

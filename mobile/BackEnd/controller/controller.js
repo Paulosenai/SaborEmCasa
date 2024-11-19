@@ -139,8 +139,7 @@ const userController = {
             }
         }
     },
-
-      resetPassword: async(req, res)=>{
+    resetPassword: async(req, res)=>{
         let{email,senha} = req.body
 
         email = email.toLowerCase();

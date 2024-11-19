@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Image, SafeAreaView, View, Alert, Animated, Easing, ActivityIndicator, TouchableOpacity } from "react-native";
 import { Input, Text } from '@rneui/themed';
-import Icon from 'react-native-vector-icons/FontAwesome'; 
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { Button } from 'galio-framework';
 import styles from "./Styles";
 import axios from 'axios';
@@ -13,21 +13,58 @@ const Login = ({ navigation }) => {
   const [animation] = useState(new Animated.Value(0));
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+ 
+  // New validation states
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+
+  // Email validation function
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email) {
+      setEmailError('Email é obrigatório');
+      return false;
+    }
+    if (!emailRegex.test(email)) {
+      setEmailError('Digite um email válido');
+      return false;
+    }
+    setEmailError('');
+    return true;
+  };
+
+  // Password validation function
+  const validatePassword = (password) => {
+    if (!password) {
+      setPasswordError('Senha é obrigatória');
+      return false;
+    }
+    if (password.length < 6) {
+      setPasswordError('Senha deve ter no mínimo 6 caracteres');
+      return false;
+    }
+    setPasswordError('');
+    return true;
+  };
 
   const handleLogin = async () => {
+
+    setEmailError('');
+    setPasswordError('');
+    const isEmailValid = validateEmail(email);
+    const isPasswordValid = validatePassword(senha);
+
+   
+    if (!isEmailValid || !isPasswordValid) {
+      return;
+    }
+
     setIsLoading(true);
     try {
-      if (!email || !senha) {
-        Alert.alert('Erro', 'Por favor, preencha todos os campos!');
-        setIsLoading(false);
-        return;
-      }
-
       const data = { email, senha };
       const response = await axios.post('http://10.0.2.2:8085/api/validate', data);
 
       if (response.status === 200) {
-        // Autenticação bem-sucedida, salvar os dados do usuário
         setEmail('');
         setSenha('');
         const userData = {
@@ -36,7 +73,6 @@ const Login = ({ navigation }) => {
           senha: response.data.senha,
           nome: response.data.nome
         };
-        // Enviar os dados do usuário para a HomePage
         navigation.navigate('TabScreen', { userData });
       } else {
         Alert.alert('Erro', 'Email ou senha incorretos, por favor tente novamente');
@@ -54,7 +90,6 @@ const Login = ({ navigation }) => {
   };
 
   const handleNavigateToRegister = () => {
-    // Animação ao mudar para a tela de registro
     Animated.timing(animation, {
       toValue: 1,
       duration: 500,
@@ -67,7 +102,7 @@ const Login = ({ navigation }) => {
   };
 
   const handleNavigateToForgotPassword = () => {
-    navigation.navigate('ForgotPassword'); 
+    navigation.navigate('ForgotPassword');
   };
 
   const translateY = animation.interpolate({
@@ -95,8 +130,13 @@ const Login = ({ navigation }) => {
               style={styles.boxlogin}
               placeholder='Email:'
               value={email}
-              onChangeText={(text) => setEmail(text.toLowerCase())}
+              onChangeText={(text) => {
+                setEmail(text.toLowerCase());
+                validateEmail(text.toLowerCase());
+              }}
               keyboardType="email-address"
+              errorMessage={emailError}
+              errorStyle={{ color: 'red', marginLeft: 10  }}
             />
             <Input
               inputContainerStyle={{ borderBottomWidth: 0 }}
@@ -104,7 +144,10 @@ const Login = ({ navigation }) => {
               style={styles.boxlogin}
               placeholder='Senha:'
               value={senha}
-              onChangeText={setSenha}
+              onChangeText={(text) => {
+                setSenha(text);
+                validatePassword(text);
+              }}
               secureTextEntry={!showPassword}
               color='#FFA92C'
               rightIcon={
@@ -112,6 +155,8 @@ const Login = ({ navigation }) => {
                   <Icon name={showPassword ? 'eye' : 'eye-slash'} style={{ position: "absolute", right: 15, top: 10 }} size={20} color="#FFA92C" />
                 </TouchableOpacity>
               }
+              errorMessage={passwordError}
+              errorStyle={{ color: 'red', marginLeft: 10 }}
             />
             <View style={styles.buttonContainer}>
               <Button
@@ -120,10 +165,10 @@ const Login = ({ navigation }) => {
                 color='red'
                 onPress={handleLogin}
                 style={styles.buttonCont}
-                disabled={isLoading} 
+                disabled={isLoading}
               >
                 {isLoading ? (
-                  <ActivityIndicator color="white" /> 
+                  <ActivityIndicator color="white" />
                 ) : (
                   <Text style={styles.buttonText}>Entrar</Text>
                 )}
@@ -132,8 +177,8 @@ const Login = ({ navigation }) => {
             <Text style={styles.remember} onPress={handleNavigateToRegister}>
               Não possui login? Faça o cadastro!
             </Text>
-            <Text 
-              style={[styles.forgotPassword, { textAlign: 'center', fontWeight: 'bold', color: '#FFA92C', fontSize: 15, }]} 
+            <Text
+              style={[styles.forgotPassword, { textAlign: 'center', fontWeight: 'bold', color: '#FFA92C', fontSize: 15, }]}
               onPress={handleNavigateToForgotPassword}
             >
               Esqueceu a senha?
