@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { View, SafeAreaView, ScrollView, Image, ImageBackground, TouchableOpacity, FlatList, Alert, Animated } from 'react-native';
+import { View, SafeAreaView, ScrollView, Image, ImageBackground, TouchableOpacity, FlatList, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { Text, Header } from '@rneui/themed';
+import { Text } from '@rneui/themed';
 import styles from "./Style"; 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';

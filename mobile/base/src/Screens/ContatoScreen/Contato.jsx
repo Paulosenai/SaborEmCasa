@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, SafeAreaView, ScrollView, Image, ImageBackground, TouchableOpacity, TextInput, Animated } from 'react-native';
+import { View, SafeAreaView, ScrollView, Image, ImageBackground, Animated } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Text, Header } from '@rneui/themed';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import axios from 'axios';
-import { Card } from 'galio-framework';
+import Icon from 'react-native-vector-icons/MaterialIcons';;
 
 import styles from "./Styles";
 
@@ -24,23 +22,6 @@ const Sidebar = ({ isOpen, onClose }) => {
     navigation.navigate(screenName);
     onClose();
   };
-
-  return (
-    <Animated.View style={[styles.sidebarContainer, { transform: [{ translateX }] }]}>
-      <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-        <Text style={styles.closeButtonText}>Fechar</Text>
-      </TouchableOpacity>
-      <View style={styles.sidebarContent}>
-        <Text style={styles.sidebarTitle}>Login</Text>
-        <TouchableOpacity style={styles.sidebarItem} onPress={() => navigateToScreen('Login')}>
-          <Text style={styles.sidebarItemText}>Login</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.sidebarItem} onPress={() => navigateToScreen('Register')}>
-          <Text style={styles.sidebarItemText}>Registrar</Text>
-        </TouchableOpacity>
-      </View>
-    </Animated.View>
-  );
 };
 
 const Contato = () => {
@@ -91,7 +72,6 @@ const Contato = () => {
           </View>
         }
       />
-      <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
       <ScrollView>
         {/* cards */}
         <View style={styles.section}>

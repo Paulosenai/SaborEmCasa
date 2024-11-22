@@ -1,164 +1,272 @@
 import React, { useState } from 'react';
-import { View, TextInput, Alert, StyleSheet, Text, SafeAreaView, TouchableOpacity } from 'react-native';
+import { 
+  View, 
+  Text, 
+  TextInput, 
+  TouchableOpacity, 
+  Alert, 
+  StyleSheet, 
+  Modal 
+} from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import axios from 'axios';
 
-
-const ForgotPassword = ({ navigation }) => {
+export default function PasswordResetScreen({ navigation }) {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [step, setStep] = useState('email');
-  const [loading, setLoading] = useState(false); 
+  const [novaSenha, setNovaSenha] = useState('');
+  const [confirmarSenha, setConfirmarSenha] = useState('');
+  const [mostrarFormulario, setMostrarFormulario] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [passwordErrors, setPasswordErrors] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+  const [isSuccess, setIsSuccess] = useState(false);
 
-  const handleEmailSubmit = async () => {
+  const validatePassword = (password) => {
+    const errors = [];
+    if (password.length < 6) errors.push("Senha deve ter pelo menos 6 caracteres");
+    if (!/[A-Z]/.test(password)) errors.push("Deve conter 1 letra maiúscula");
+    if (!/[a-z]/.test(password)) errors.push("Deve conter 1 letra minúscula");
+    if (!/\d/.test(password)) errors.push("Deve conter 1 número");
+    if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) errors.push("Deve conter 1 caractere especial");
+    return errors;
+  };
+
+  const handleResetSenha = async () => {
     if (!email) {
-      Alert.alert("Erro", "Por favor, insira seu e-mail.");
+      showModal("Por favor, insira seu email.", false);
       return;
     }
-
-    setLoading(true); 
 
     try {
       const response = await axios.post('http://10.0.2.2:8085/api/reset', { email });
 
-      if (response.status === 200 && response.data.msg === 'E-mail enviado com sucesso!') {
-        Alert.alert('Sucesso', 'Instruções enviadas para o seu e-mail.');
-        setStep('password'); 
-        setEmail('');
-      } else {
-        Alert.alert('Erro', 'E-mail não encontrado.');
+      if (response.status === 200) {
+        setMostrarFormulario(true);
       }
     } catch (error) {
-      console.error(error);
-      Alert.alert('Erro', 'Ocorreu um erro ao tentar enviar a solicitação.');
-    } finally {
-      setLoading(false); 
+      console.error("Erro ao enviar email", error);
+      showModal("Não foi possível enviar o email. Tente novamente.", false);
     }
   };
 
-  // Função para atualizar a senha
-  const handlePasswordSubmit = async () => {
-    if (!password) {
-      Alert.alert("Erro", "Por favor, insira a nova senha.");
+  const handleTrocarSenha = async () => {
+    if (novaSenha !== confirmarSenha) {
+      showModal("As senhas não coincidem.", false);
       return;
     }
 
-    setLoading(true); 
-
     try {
-      const response = await axios.put('http://10.0.2.2:8085/api/resetpassword', { email, password });
+      const data = { email, senha: novaSenha };
+      const response = await axios.put('http://10.0.2.2:8085/api/resetpassword', data);
 
       if (response.status === 200) {
-        Alert.alert('Sucesso', 'Senha alterada com sucesso!');
-        setStep('email'); 
-        setPassword('');
+        showModal("Senha trocada com sucesso!", true);
+        navigation.navigate("LoginScreen");
       } else {
-        Alert.alert('Erro', 'Não foi possível alterar a senha. Tente novamente.');
+        showModal("Erro ao trocar a senha. Tente novamente.", false);
       }
     } catch (error) {
-      console.error(error);
-      Alert.alert('Erro', 'Ocorreu um erro ao tentar alterar a senha.');
-    } finally {
-      setLoading(false); 
+      showModal(`Erro ao trocar a senha: ${error.message}`, false);
     }
   };
 
+  const showModal = (message, isSuccess) => {
+    setModalMessage(message);
+    setIsSuccess(isSuccess);
+    setModalVisible(true);
+  };
+
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.innerContainer}>
-        <Text style={styles.title}>Deseja alterar sua senha?</Text>
-        {step === 'email' ? (
-          <>
+    <View style={styles.container}>
+      <Text style={styles.title}>Recuperar Senha</Text>
+
+      <Text style={styles.subtitle}>
+        {!mostrarFormulario
+          ? "Insira seu email para redefinir sua senha"
+          : "Crie uma nova senha segura"}
+      </Text>
+
+      <TextInput
+        style={styles.input}
+        placeholder="Digite seu email"
+        value={email}
+        onChangeText={(text) => setEmail(text.toLowerCase())}  
+        editable={!mostrarFormulario}
+      />
+
+
+      {mostrarFormulario && (
+        <>
+          <View style={styles.passwordContainer}>
             <TextInput
-              style={styles.input}
-              placeholder="Digite seu e-mail"
-              value={email}
-              onChangeText={setEmail}
-              keyboardType="email-address"
-              autoCapitalize="none"
+              style={styles.passwordInput}
+              placeholder="Nova Senha"
+              value={novaSenha}
+              onChangeText={(text) => {
+                setNovaSenha(text);
+                setPasswordErrors([]);
+              }}
+              secureTextEntry={!showPassword}
             />
-            <TouchableOpacity 
-              style={styles.primaryButton}
-              onPress={handleEmailSubmit}
-              disabled={loading}
-            >
-              <Text style={styles.buttonText}>{loading ? "Enviando..." : "Enviar Instruções"}</Text>
+            <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+              <Icon name={showPassword ? 'eye' : 'eye-slash'} style={{ padding: 10 }} size={20} color="#FFA92C" />
             </TouchableOpacity>
-          </>
-        ) : (
-          <>
+          </View>
+
+          <View style={styles.passwordContainer}>
             <TextInput
-              style={styles.input}
-              placeholder="Nova senha"
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry
+              style={styles.passwordInput}
+              placeholder="Confirmar Nova Senha"
+              value={confirmarSenha}
+              onChangeText={setConfirmarSenha}
+              secureTextEntry={!showPassword}
             />
-            <TouchableOpacity 
-              style={styles.primaryButton}
-              onPress={handlePasswordSubmit}
-              disabled={loading}
-            >
-              <Text style={styles.buttonText}>{loading ? "Alterando..." : "Redefinir Senha"}</Text>
+            <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+              <Icon name={showPassword ? 'eye' : 'eye-slash'} style={{ padding: 10 }} size={20} color="#FFA92C" />
             </TouchableOpacity>
-          </>
-        )}
-      </View>
-    </SafeAreaView>
+          </View>
+
+          {passwordErrors.length > 0 && (
+            <View style={styles.errorContainer}>
+              {passwordErrors.map((error, index) => (
+                <Text key={index} style={styles.errorText}>
+                  {error}
+                </Text>
+              ))}
+            </View>
+          )}
+        </>
+      )}
+
+      <TouchableOpacity
+        style={styles.button}
+        onPress={!mostrarFormulario ? handleResetSenha : handleTrocarSenha}
+      >
+        <Text style={styles.buttonText}>
+          {!mostrarFormulario ? "Enviar" : "Redefinir Senha"}
+        </Text>
+      </TouchableOpacity>
+
+      {!mostrarFormulario && (
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Text style={styles.backLink}>Voltar para Login</Text>
+        </TouchableOpacity>
+      )}
+
+      <Modal
+        transparent={true}
+        animationType="slide"
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={[styles.modalText, isSuccess ? styles.successText : styles.errorText]}>
+              {modalMessage}
+            </Text>
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={() => setModalVisible(false)}
+            >
+              <Text style={styles.modalButtonText}>Fechar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f4f6f9',
     justifyContent: 'center',
-    alignItems: 'center',
     padding: 20,
-  },
-  innerContainer: {
-    width: '100%',
-    maxWidth: 400,
-    padding: 20,
-    borderRadius: 10,
-    backgroundColor: '#fff',
-    elevation: 5,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    shadowOffset: { width: 0, height: 2 },
+    backgroundColor: '#f4f4f4',
   },
   title: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 20,
-    color: '#FFA92C',
+  },
+  subtitle: {
+    textAlign: 'center',
+    color: '#666',
+    marginBottom: 20,
   },
   input: {
     height: 50,
-    borderColor: '#FFA92C',
+    borderColor: '#ddd',
     borderWidth: 1,
-    borderRadius: 5,
-    paddingLeft: 15,
-    marginBottom: 20,
-    backgroundColor: '#fff',
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    marginBottom: 15,
+    backgroundColor: 'white',
   },
-  primaryButton: {
-    backgroundColor: '#FFA92C',
-    paddingVertical: 12,
-    borderRadius: 8,
+  passwordContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 15,
+  },
+  passwordInput: {
+    flex: 1,
+    height: 50,
+    borderColor: '#ddd',
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    backgroundColor: 'white',
+  },
+  button: {
+    backgroundColor: 'orange',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
   },
   buttonText: {
-    fontSize: 16,
+    color: 'white',
     fontWeight: 'bold',
-    color: '#fff',
   },
-  footer: {
+  backLink: {
+    color: 'black',
+    textAlign: 'center',
+    marginTop: 15,
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    width: '80%',
     alignItems: 'center',
   },
-  
+  modalText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  successText: {
+    color: 'green',
+  },
+  errorText: {
+    color: 'red',
+  },
+  modalButton: {
+    backgroundColor: 'orange',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  modalButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
 });
-
-export default ForgotPassword;
