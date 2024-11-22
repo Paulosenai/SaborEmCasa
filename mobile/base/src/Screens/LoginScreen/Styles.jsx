@@ -57,7 +57,29 @@ const styles = StyleSheet.create({
     width: 400,
     height: 250,
   },
-
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    width: 300,
+    alignItems: 'center',
+  },
+  modalButton: {
+    marginTop: 20,
+    paddingVertical: 10,
+    borderRadius: 25,
+    backgroundColor: '#e63946',
+  },
+  errorMessage: {
+    color: 'red',
+    marginLeft: 10,
+  },
 });
 
 export default styles;

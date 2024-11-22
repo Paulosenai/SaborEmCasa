@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-import { Image, SafeAreaView, View, Alert, Animated, Easing, ActivityIndicator, TouchableOpacity } from "react-native";
+import { Image, SafeAreaView, View, Alert, Animated, Easing, ActivityIndicator, TouchableOpacity, Modal } from "react-native";
 import { Input, Text } from '@rneui/themed';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Button } from 'galio-framework';
 import styles from "./Styles";
 import axios from 'axios';
-
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -13,12 +12,12 @@ const Login = ({ navigation }) => {
   const [animation] = useState(new Animated.Value(0));
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
- 
-  // New validation states
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+  const [modalTitle, setModalTitle] = useState('');
 
-  // Email validation function
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email) {
@@ -33,7 +32,7 @@ const Login = ({ navigation }) => {
     return true;
   };
 
-  // Password validation function
+ 
   const validatePassword = (password) => {
     if (!password) {
       setPasswordError('Senha é obrigatória');
@@ -48,13 +47,11 @@ const Login = ({ navigation }) => {
   };
 
   const handleLogin = async () => {
-
     setEmailError('');
     setPasswordError('');
     const isEmailValid = validateEmail(email);
     const isPasswordValid = validatePassword(senha);
 
-   
     if (!isEmailValid || !isPasswordValid) {
       return;
     }
@@ -74,19 +71,32 @@ const Login = ({ navigation }) => {
           nome: response.data.nome
         };
         navigation.navigate('TabScreen', { userData });
+        showSuccessModal('Login realizado com sucesso!', 'Sucesso');
       } else {
-        Alert.alert('Erro', 'Email ou senha incorretos, por favor tente novamente');
+        showErrorModal('Email ou senha incorretos, por favor tente novamente', 'Erro');
       }
     } catch (error) {
       if (error.response && error.response.status === 401) {
-        Alert.alert('Erro', 'Ocorreu um erro ao fazer o login, por favor, tente novamente');
+        showErrorModal('Email ou senha incorretos. Por favor, tente novamente', 'Erro');
       } else {
         console.log(error);
-        Alert.alert('Erro', 'Email ou senha incorretos. Por favor, tente novamente');
+        showErrorModal('Ocorreu um erro ao fazer o login, por favor, tente novamente', 'Erro');
       }
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const showSuccessModal = (message, title) => {
+    setModalMessage(message);
+    setModalTitle(title);
+    setModalVisible(true);
+  };
+
+  const showErrorModal = (message, title) => {
+    setModalMessage(message);
+    setModalTitle(title);
+    setModalVisible(true);
   };
 
   const handleNavigateToRegister = () => {
@@ -136,7 +146,7 @@ const Login = ({ navigation }) => {
               }}
               keyboardType="email-address"
               errorMessage={emailError}
-              errorStyle={{ color: 'red', marginLeft: 10  }}
+              errorStyle={{ color: 'red', marginLeft: 10 }}
             />
             <Input
               inputContainerStyle={{ borderBottomWidth: 0 }}
@@ -178,7 +188,7 @@ const Login = ({ navigation }) => {
               Não possui login? Faça o cadastro!
             </Text>
             <Text
-              style={[styles.forgotPassword, { textAlign: 'center', fontWeight: 'bold', color: '#FFA92C', fontSize: 15, }]}
+              style={[styles.forgotPassword, { textAlign: 'center', fontWeight: 'bold', color: '#FFA92C', fontSize: 15 }]}
               onPress={handleNavigateToForgotPassword}
             >
               Esqueceu a senha?
@@ -186,8 +196,29 @@ const Login = ({ navigation }) => {
           </View>
         </View>
       </Animated.View>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text h4>{modalTitle}</Text>
+            <Text>{modalMessage}</Text>
+            <Button
+              onlyText
+              title="Fechar"
+              color='red'
+              onPress={() => setModalVisible(false)}
+              style={styles.modalButton}
+            >Fechar</Button>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
-}
+};
 
 export default Login;
