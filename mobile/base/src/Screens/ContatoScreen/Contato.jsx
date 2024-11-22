@@ -4,6 +4,8 @@ import { useNavigation } from '@react-navigation/native';
 import { Text, Header } from '@rneui/themed';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
+import { Card } from 'galio-framework';
+
 import styles from "./Styles";
 
 const Sidebar = ({ isOpen, onClose }) => {
@@ -121,6 +123,8 @@ const Contato = () => {
             </View>
           ))}
         </View>
+
+        
       </ScrollView>
     </SafeAreaView>
   );

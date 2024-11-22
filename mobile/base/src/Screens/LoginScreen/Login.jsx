@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { Button } from 'galio-framework';
 import styles from "./Styles";
 import axios from 'axios';
-import AsyncStorage from "@react-native-async-storage/async-storage";
+
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState('');
