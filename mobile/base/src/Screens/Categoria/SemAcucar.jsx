@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useCallback } from "react";
-import axios from 'axios'; 
+import axios from 'axios';
 import { View, SafeAreaView, ScrollView, Image, ImageBackground, TouchableOpacity, FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Text, Header } from '@rneui/themed';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Icon from 'react-native-vector-icons/MaterialIcons'; 
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import styles from "./Styles";
 
-export default function Semacucar({route}) {
+export default function Semacucar({ route }) {
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
-  const [isScrolling, setIsScrolling] = useState(false); 
+  const [isScrolling, setIsScrolling] = useState(false);
   const navigation = useNavigation();
   const [favoritedItems, setFavoritedItems] = useState(new Set());
 
@@ -30,14 +30,14 @@ export default function Semacucar({route}) {
   }, []);
 
   const handleVizualizar = (id) => {
-    if (!isScrolling) { 
+    if (!isScrolling) {
       navigation.navigate('ReceitaCategorias', { id });
     }
   };
 
   const handleScroll = (event) => {
-    setIsScrolling(true);  
-    setTimeout(() => setIsScrolling(false), 100); 
+    setIsScrolling(true);
+    setTimeout(() => setIsScrolling(false), 100);
   };
 
   useEffect(() => {
@@ -118,7 +118,7 @@ export default function Semacucar({route}) {
           onPress: () => navigation.goBack(),
         }}
       />
-      <ScrollView onScroll={handleScroll} scrollEventThrottle={16}>  
+      <ScrollView onScroll={handleScroll} scrollEventThrottle={16}>
         <View style={styles.section}>
           <View style={styles.newsCard}>
             <ImageBackground

@@ -52,7 +52,7 @@ const Contato = () => {
       specialty: 'Especialista em drinks',
       phone: '+55 14 997765897',
       image: require("../../../res/img/drinks.jpg"),
-      
+
     }
   ];
 
@@ -93,7 +93,7 @@ const Contato = () => {
                   <Text style={styles.descriptioninfo}>{chef.specialty}</Text>
                   <Text style={styles.descriptioninfo}>Telefone para contato:</Text>
                   <Text style={styles.descriptioninfo}>{chef.phone}</Text>
-                  
+
                 </View>
               </View>
               <Image
@@ -104,7 +104,7 @@ const Contato = () => {
           ))}
         </View>
 
-        
+
       </ScrollView>
     </SafeAreaView>
   );

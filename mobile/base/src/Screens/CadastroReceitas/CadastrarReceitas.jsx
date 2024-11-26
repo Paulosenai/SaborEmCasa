@@ -30,7 +30,6 @@ export default function CadastrarReceitas({ navigation, route }) {
   const [isModalVisible, setIsModalVisible] = useState(false); // Controle de visibilidade da modal
   const [modalMessage, setModalMessage] = useState(''); // Mensagem da modal
   const [modalType, setModalType] = useState('error'); // Tipo de modal ('error' por padrão)
-
   const userData = route.params.obj;
   const id_usuario = route.params.obj.id;
 

@@ -2,7 +2,7 @@ import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
   container: {
-    paddingBottom: 10, 
+    paddingBottom: 10,
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
     justifyContent: 'center',
-},
+  },
   tittle: {
     fontSize: 20,
     fontWeight: 'bold',
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     alignItems: "center",
   },
-  
+
   buttonText: {
     fontWeight: "bold",
     fontSize: 17,
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
   buttonCont: {
     backgroundColor: '#FFA92C',
     borderRadius: 15,
-    width: 140,   
+    width: 140,
     alignItems: "center",
   },
   botao: {

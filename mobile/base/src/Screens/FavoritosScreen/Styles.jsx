@@ -5,7 +5,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   headerContainer: {
-    backgroundColor: 'orange', 
+    backgroundColor: 'orange',
     padding: 15,
     flexDirection: 'row',
     alignItems: 'center',
@@ -24,11 +24,11 @@ const styles = StyleSheet.create({
   listContainer: {
     flex: 1,
     padding: 10,
-    backgroundColor: '#F5F5F5', 
+    backgroundColor: '#F5F5F5',
   },
   item: {
-    width: '48%',  
-    margin: '1%', 
+    width: '48%',
+    margin: '1%',
     borderRadius: 10,
     overflow: 'hidden',
     backgroundColor: 'white',

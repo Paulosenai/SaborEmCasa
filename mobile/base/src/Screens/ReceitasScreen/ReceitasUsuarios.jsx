@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { View, SafeAreaView, ScrollView, Image, ImageBackground, TouchableOpacity, FlatList, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Text } from '@rneui/themed';
-import styles from "./Style"; 
+import styles from "./Style";
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
 import { ActivityIndicator } from "react-native-paper";
@@ -94,7 +94,7 @@ const ReceitasUsuario = ({ route }) => {
       </View>
     </View>
   );
-  
+
   const handleEdit = (recipe) => {
     navigation.navigate('Editrecipe', { recipe });
   };
@@ -107,7 +107,7 @@ const ReceitasUsuario = ({ route }) => {
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Receitas do Usuario</Text>
       </View>
-     
+
       <ScrollView>
         <View style={styles.section}>
           <View style={styles.newsCard}>

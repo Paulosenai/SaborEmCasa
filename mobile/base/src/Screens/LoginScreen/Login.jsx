@@ -32,7 +32,7 @@ const Login = ({ navigation }) => {
     return true;
   };
 
- 
+
   const validatePassword = (password) => {
     if (!password) {
       setPasswordError('Senha é obrigatória');
@@ -91,13 +91,20 @@ const Login = ({ navigation }) => {
     setModalMessage(message);
     setModalTitle(title);
     setModalVisible(true);
+    setTimeout(() => {
+      setModalVisible(false);
+    }, 3000);
   };
 
   const showErrorModal = (message, title) => {
     setModalMessage(message);
     setModalTitle(title);
     setModalVisible(true);
+    setTimeout(() => {
+      setModalVisible(false);
+    }, 3000);
   };
+
 
   const handleNavigateToRegister = () => {
     Animated.timing(animation, {

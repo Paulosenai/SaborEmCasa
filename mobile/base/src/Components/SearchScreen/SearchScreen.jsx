@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, FlatList, TouchableOpacity, Image, Modal, ScrollView } from 'react-native';
 import axios from 'axios';
-import Icon from 'react-native-vector-icons/MaterialIcons'; 
-import styles from './Styles'; 
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import styles from './Styles';
 
 const SearchScreen = ({ navigation, route }) => {
   const [searchQuery, setSearchQuery] = useState(route.params?.query || '');
   const [results, setResults] = useState([]);
   const [allRecipes, setAllRecipes] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(''); 
+  const [selectedCategory, setSelectedCategory] = useState('');
   const [categories, setCategories] = useState([]);
-  const [showCategories, setShowCategories] = useState(false); 
+  const [showCategories, setShowCategories] = useState(false);
 
   // Função para buscar todas as receitas
   const fetchAllRecipes = async () => {
     try {
-      const response = await axios.get('http://10.0.2.2:8085/api/readReceitaPub'); 
+      const response = await axios.get('http://10.0.2.2:8085/api/readReceitaPub');
       setAllRecipes(response.data);
       setResults(response.data);
 
@@ -32,17 +32,17 @@ const SearchScreen = ({ navigation, route }) => {
 
 
   useEffect(() => {
-    const filteredResults = allRecipes.filter(recipe => 
-      (recipe.nome.toLowerCase().includes(searchQuery.toLowerCase()) || !searchQuery) && 
+    const filteredResults = allRecipes.filter(recipe =>
+      (recipe.nome.toLowerCase().includes(searchQuery.toLowerCase()) || !searchQuery) &&
       (selectedCategory ? recipe.categoria === selectedCategory : true)
     );
     setResults(filteredResults);
   }, [searchQuery, allRecipes, selectedCategory]);
 
   const renderItem = ({ item }) => (
-    <TouchableOpacity 
-      style={styles.item} 
-      onPress={() => navigation.navigate('Receita', { id: item.id })} 
+    <TouchableOpacity
+      style={styles.item}
+      onPress={() => navigation.navigate('Receita', { id: item.id })}
     >
       <Image source={{ uri: `data:image/jpeg;base64,${item.imagemReceita}` }} style={styles.image} />
       <Text style={styles.title}>{item.nome}</Text>

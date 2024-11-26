@@ -3,7 +3,7 @@ import { View, TextInput, Alert, StyleSheet, Image, Text, SafeAreaView, ScrollVi
 import axios from 'axios';
 import RNFS from 'react-native-fs';
 import { launchImageLibrary } from 'react-native-image-picker';
-import { Dropdown } from 'react-native-element-dropdown';  // Element Dropdown
+import { Dropdown } from 'react-native-element-dropdown'; 
 import { SegmentedButtons } from 'react-native-paper';
 import { Button } from "galio-framework";
 
@@ -17,19 +17,16 @@ const categories = [
 
 const EditRecipe = ({ route, navigation }) => {
   const { recipe } = route.params;
-
   const [nome, setNome] = useState(recipe.nome);
   const [ingredientes, setIngredientes] = useState(recipe.ingredientes);
   const [modoPreparo, setModoPreparo] = useState(recipe.modo_preparo);
-  const [imagem, setImagem] = useState(null); 
-  const [categoria, setCategoria] = useState(null);
-  const [status, setStatus] = useState(recipe.privacidade || 'publico'); 
-
-  // Modal states
+  const [imagem, setImagem] = useState(recipe.imagemReceita); 
+  const [categoria, setCategoria] = useState(recipe.categoria);
+  const [status, setStatus] = useState(recipe.privacidade || 'publico');
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
-  const [modalType, setModalType] = useState('success'); // 'success' or 'error'
-
+  const [modalType, setModalType] = useState('success'); 
+  const [EditselectedImage, setEditSelectedImage] = useState(null)
   // Função para abrir a galeria e selecionar a imagem
   const handleImagePicker = () => {
     const options = {
@@ -45,7 +42,7 @@ const EditRecipe = ({ route, navigation }) => {
         console.error("Erro ao abrir a galeria:", response.errorMessage);
       } else if (response.assets && response.assets.length > 0) {
         const selectedImage = response.assets[0];
-        setImagem(selectedImage.uri); 
+        setEditSelectedImage(selectedImage.uri); 
       }
     });
   };
@@ -91,9 +88,11 @@ const EditRecipe = ({ route, navigation }) => {
 
     try {
       // Se a imagem for válida, converta-a para base64
-      let imageData = null;
-      if (imagem) {
-        imageData = await RNFS.readFile(imagem, 'base64'); 
+      if (EditselectedImage) {
+        imageData = await RNFS.readFile(imagem, 'base64');
+      }
+      else {
+        imageData = imagem
       }
 
       const updatedRecipe = {
@@ -143,7 +142,7 @@ const EditRecipe = ({ route, navigation }) => {
                 style={{ width: 170, height: 150, resizeMode: 'contain' }}
                 source={
                   imagem 
-                    ? { uri: imagem }  
+                    ? { uri: `data:image/jpeg;base64,${imagem}`}  
                     : require('../../../res/img/imageIcon.png') 
                 }
               />

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { 
-  View, 
-  Text, 
-  TextInput, 
-  TouchableOpacity, 
-  Alert, 
-  StyleSheet, 
-  Modal 
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+  StyleSheet,
+  Modal
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import axios from 'axios';
@@ -51,15 +51,22 @@ export default function PasswordResetScreen({ navigation }) {
   };
 
   const handleTrocarSenha = async () => {
+    const validationErrors = validatePassword(novaSenha);
+  
+    if (validationErrors.length > 0) {
+      setPasswordErrors(validationErrors);
+      return;
+    }
+  
     if (novaSenha !== confirmarSenha) {
       showModal("As senhas não coincidem.", false);
       return;
     }
-
+  
     try {
       const data = { email, senha: novaSenha };
       const response = await axios.put('http://10.0.2.2:8085/api/resetpassword', data);
-
+  
       if (response.status === 200) {
         showModal("Senha trocada com sucesso!", true);
         navigation.navigate("LoginScreen");
@@ -70,6 +77,7 @@ export default function PasswordResetScreen({ navigation }) {
       showModal(`Erro ao trocar a senha: ${error.message}`, false);
     }
   };
+  
 
   const showModal = (message, isSuccess) => {
     setModalMessage(message);
@@ -91,7 +99,7 @@ export default function PasswordResetScreen({ navigation }) {
         style={styles.input}
         placeholder="Digite seu email"
         value={email}
-        onChangeText={(text) => setEmail(text.toLowerCase())}  
+        onChangeText={(text) => setEmail(text.toLowerCase())}
         editable={!mostrarFormulario}
       />
 

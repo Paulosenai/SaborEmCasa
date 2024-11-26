@@ -42,8 +42,8 @@ const Favorites = () => {
   }, []);
 
   const handleFavoriteToggle = async (id) => {
-    const updatedFavorites = favorites.some(favItem => favItem.id === id) 
-      ? favorites.filter(favItem => favItem.id !== id) 
+    const updatedFavorites = favorites.some(favItem => favItem.id === id)
+      ? favorites.filter(favItem => favItem.id !== id)
       : [...favorites, recipes.find(recipe => recipe.id === id)];
 
     setFavorites(updatedFavorites);

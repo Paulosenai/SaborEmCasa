@@ -45,16 +45,16 @@ export default function Receita({ navigation, route }) {
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <View style={styles.imageContainer}>
           {recipe.imagemReceita ? (
-            <Image 
-              source={{ uri: `data:image/jpeg;base64,${recipe.imagemReceita}` }} 
-              style={styles.image} 
-              onLoad={() => console.log('Imagem carregada com sucesso')} 
-              onError={(error) => console.log('Erro ao carregar imagem:', error)} 
+            <Image
+              source={{ uri: `data:image/jpeg;base64,${recipe.imagemReceita}` }}
+              style={styles.image}
+              onLoad={() => console.log('Imagem carregada com sucesso')}
+              onError={(error) => console.log('Erro ao carregar imagem:', error)}
             />
           ) : (
-            <Image 
-              source={require('../../../res/img/brigadeiro.png')} 
-              style={styles.image} 
+            <Image
+              source={require('../../../res/img/brigadeiro.png')}
+              style={styles.image}
             />
           )}
         </View>
@@ -63,31 +63,31 @@ export default function Receita({ navigation, route }) {
           <Text style={styles.titleContent}>{recipe.nome}</Text>
           <Text style={styles.subTitle}>Ingredientes:</Text>
           <View style={styles.ingredientsContainer}>
-            {Array.isArray(recipe.ingredientes) 
+            {Array.isArray(recipe.ingredientes)
               ? recipe.ingredientes.map((ingrediente, index) => (
-                  <View key={index} style={styles.ingredientCircle}>
-                    <Text style={styles.ingredientText}>{ingrediente}</Text>
-                  </View>
-                ))
+                <View key={index} style={styles.ingredientCircle}>
+                  <Text style={styles.ingredientText}>{ingrediente}</Text>
+                </View>
+              ))
               : recipe.ingredientes.split(',').map(ing => ing.trim()).map((ingrediente, index) => (
-                  <View key={index} style={styles.ingredientCircle}>
-                    <Text style={styles.ingredientText}>{ingrediente}</Text>
-                  </View>
-                ))
+                <View key={index} style={styles.ingredientCircle}>
+                  <Text style={styles.ingredientText}>{ingrediente}</Text>
+                </View>
+              ))
             }
           </View>
           <View style={styles.categoria}>
             <Text style={styles.subTitle}>Categoria:</Text>
             <Text style={styles.preparation}>{recipe.categoria}</Text>
           </View>
-          
+
           <View style={styles.modo_de_preparo}>
             <Text style={styles.subTitle}>Modo de preparo:</Text>
             <Text style={styles.preparation}>{recipe.modo_preparo}</Text>
           </View>
 
-          
-          
+
+
         </View>
 
       </ScrollView>
@@ -130,8 +130,8 @@ const styles = StyleSheet.create({
     color: '#fff',
     paddingVertical: 10,
     paddingHorizontal: 15,
-    backgroundColor: '#FFA92C', 
-    borderRadius: 10, 
+    backgroundColor: '#FFA92C',
+    borderRadius: 10,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
   preparation: {
     fontSize: 18,
     color: '#333',
-    padding: 10,  
+    padding: 10,
     backgroundColor: '#FFF',
     borderRadius: 8,
     borderWidth: 1,
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     shadowRadius: 2.84,
     elevation: 5,
     marginBottom: 15,
-    lineHeight: 24, 
+    lineHeight: 24,
     textAlign: 'left', // Alinhamento à esquerda
   },
   receitacontainer: {

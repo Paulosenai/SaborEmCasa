@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Image, SafeAreaView, View, Modal, TouchableOpacity, Text as RNText, ScrollView, } from "react-native";
 import { Input, Text } from '@rneui/themed';
 import { Button } from 'galio-framework';
-import Icon from 'react-native-vector-icons/FontAwesome'; 
+import Icon from 'react-native-vector-icons/FontAwesome';
 import axios from 'axios';
 import styles from "./Styles";
 
@@ -36,7 +36,7 @@ export default function Register({ navigation }) {
     };
 
     const isPasswordStrong = (senha) => {
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/;
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{6,}$/;
         return passwordRegex.test(senha);
     };
 
@@ -58,14 +58,14 @@ export default function Register({ navigation }) {
             showModal('*Todos os campos são obrigatórios*', 'error');
             return;
         }
-        
+
         if (!isEmailValid(email)) {
             showModal('Email inválido. Use um dos domínios permitidos (gmail.com, hotmail.com, yahoo.com, outlook.com).', 'error');
             return;
         }
 
         if (!isPasswordStrong(senha)) {
-            showModal('Senha fraca. A senha deve ter pelo menos 8 caracteres, incluindo letras maiúsculas, letras minúsculas, um número e um caractere especial.', 'error');
+            showModal('Senha fraca. A senha deve ter pelo menos 6 caracteres, incluindo letras maiúsculas, letras minúsculas, um número e um caractere especial.', 'error');
             return;
         }
 

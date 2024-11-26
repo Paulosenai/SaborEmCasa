@@ -18,7 +18,7 @@ function Home({ route }) {
   const [favoritedItems, setFavoritedItems] = useState(new Set());
   const [isLoading, setIsLoading] = useState(true);
   const [limit, setLimit] = useState(10);  // Controla o número de receitas exibidas
-  
+
   useEffect(() => {
     const loadFavorites = async () => {
       try {
@@ -48,13 +48,13 @@ function Home({ route }) {
   };
 
   useEffect(() => {
-    fetchData(); 
+    fetchData();
 
     const intervalId = setInterval(() => {
-      fetchData(); 
-    }, 5000); 
+      fetchData();
+    }, 5000);
 
-    return () => clearInterval(intervalId); 
+    return () => clearInterval(intervalId);
   }, []);
 
   const Sidebar = ({ isOpen, onClose }) => {
@@ -75,28 +75,28 @@ function Home({ route }) {
 
     const handleLogout = async () => {
       Alert.alert(
-        "Confirmar Logout", 
+        "Confirmar Logout",
         "Você tem certeza que deseja sair da sua conta?",
         [
           {
-            text: "Cancelar", 
-            onPress: () => console.log("Logout cancelado"), 
-            style: "cancel", 
+            text: "Cancelar",
+            onPress: () => console.log("Logout cancelado"),
+            style: "cancel",
           },
           {
-            text: "Sim", 
-            onPress: async () => { 
+            text: "Sim",
+            onPress: async () => {
               try {
                 await AsyncStorage.removeItem('obj');
                 onClose();
-                navigation.replace('LoginScreen'); 
+                navigation.replace('LoginScreen');
               } catch (error) {
                 console.error('Erro ao realizar logout:', error);
               }
             },
           },
         ],
-        { cancelable: false } 
+        { cancelable: false }
       );
     };
 
@@ -252,7 +252,7 @@ function Home({ route }) {
         ) : (
           <>
             <FlatList
-              data={filteredData.slice(0, limit)}  
+              data={filteredData.slice(0, limit)}
               renderItem={renderItem}
               extraData={filteredData}
               keyExtractor={item => String(item.id)}

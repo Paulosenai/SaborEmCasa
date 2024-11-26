@@ -10,7 +10,7 @@ import CadastrarReceitas from '../Screens/CadastroReceitas/CadastrarReceitas';
 
 const Tab = createBottomTabNavigator();
 
-export function Inicio({route}) {
+export function Inicio({ route }) {
   const obj = route.params.userData;
 
   return (
@@ -28,7 +28,7 @@ export function Inicio({route}) {
           } else if (route.name === 'Contato') {
             iconName = focused ? 'call' : 'call-outline';
           }
-          
+
           return (
             <Icon
               type='ionicon'
@@ -49,12 +49,12 @@ export function Inicio({route}) {
         tabBarLabelStyle: {
           fontSize: 12,
         },
-        tabBarHideOnKeyboard: true, 
+        tabBarHideOnKeyboard: true,
       })}
     >
-      <Tab.Screen initialParams={{ obj }} options={{headerShown: false}} name="Home" component={Home} />
-      <Tab.Screen initialParams={{ obj }} options={{headerShown: false}} name="Receitas User" component={ReceitaScreen} />
-      <Tab.Screen initialParams={{ obj }} 
+      <Tab.Screen initialParams={{ obj }} options={{ headerShown: false }} name="Home" component={Home} />
+      <Tab.Screen initialParams={{ obj }} options={{ headerShown: false }} name="Receitas User" component={ReceitaScreen} />
+      <Tab.Screen initialParams={{ obj }}
         options={{
           headerShown: false,
           tabBarStyle: {
@@ -70,13 +70,13 @@ export function Inicio({route}) {
               </View>
             );
           },
-        }} 
-        name="  " 
-        component={CadastrarReceitas} 
+        }}
+        name="  "
+        component={CadastrarReceitas}
       />
 
-      <Tab.Screen initialParams={{ obj }} options={{headerShown: false}} name="Favoritos" component={favoritosScreen} />
-      <Tab.Screen initialParams={{ obj }} options={{headerShown: false}} name="Contato" component={ContatoScreen} />
+      <Tab.Screen initialParams={{ obj }} options={{ headerShown: false }} name="Favoritos" component={favoritosScreen} />
+      <Tab.Screen initialParams={{ obj }} options={{ headerShown: false }} name="Contato" component={ContatoScreen} />
     </Tab.Navigator>
   );
 }
