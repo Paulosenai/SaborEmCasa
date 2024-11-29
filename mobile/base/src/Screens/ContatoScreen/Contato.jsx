@@ -36,19 +36,19 @@ const Contato = () => {
   // Define chef data
   const chefs = [
     {
-      name: 'Chef Clovis',
+      name: 'Chef Fabia',
       specialty: 'Especialista em comidas salgadas',
       phone: '+55 14 997654327',
       image: require("../../../res/img/pratoSalgado.jpg"),
     },
     {
-      name: 'Chef Abetini',
+      name: 'Chef Rafael',
       specialty: 'Especialista em confeitaria',
       phone: '+55 14 996435786',
       image: require("../../../res/img/bomba-de-chocolate.jpg"),
     },
     {
-      name: 'Chef Miguel',
+      name: 'Chef Marcelo',
       specialty: 'Especialista em drinks',
       phone: '+55 14 997765897',
       image: require("../../../res/img/drinks.jpg"),
