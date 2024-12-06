@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Image, SafeAreaView, View, Alert, Animated, Easing, ActivityIndicator, TouchableOpacity, Modal } from "react-native";
+import { Image, SafeAreaView, View, Animated, Easing, ActivityIndicator, TouchableOpacity, Modal } from "react-native";
 import { Input, Text } from '@rneui/themed';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Button } from 'galio-framework';

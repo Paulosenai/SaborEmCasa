@@ -1,38 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { View, SafeAreaView, ScrollView, Image, ImageBackground, Animated } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import React from 'react';
+import { View, SafeAreaView, ScrollView, Image, ImageBackground} from 'react-native';
 import { Text, Header } from '@rneui/themed';
 import Icon from 'react-native-vector-icons/MaterialIcons';;
-
 import styles from "./Styles";
 
-const Sidebar = ({ isOpen, onClose }) => {
-  const [translateX] = useState(new Animated.Value(-300));
-
-  useEffect(() => {
-    Animated.timing(translateX, {
-      toValue: isOpen ? 0 : -300,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
-  }, [isOpen]);
-
-  const navigation = useNavigation();
-  const navigateToScreen = (screenName) => {
-    navigation.navigate(screenName);
-    onClose();
-  };
-};
-
 const Contato = () => {
-  const navigation = useNavigation();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [data, setData] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
-
-  const toggleSidebar = () => setIsSidebarOpen(prev => !prev);
-  const closeSidebar = () => setIsSidebarOpen(false);
-
   // Define chef data
   const chefs = [
     {
@@ -68,7 +40,7 @@ const Contato = () => {
         }
         rightComponent={
           <View style={styles.headerIconsContainer}>
-            <Icon name="person" size={30} color="#fff" onPress={toggleSidebar} style={styles.headerIcon} />
+            <Icon name="person" size={30} color="#fff" style={styles.headerIcon} />
           </View>
         }
       />

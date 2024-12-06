@@ -5,8 +5,6 @@ const router = express.Router();
 // Rotas existentes
 router.get("/", clientController.getRoot); // Rota raiz
 router.get("/api/read/:id", clientController.listByID); // Listar usuário por id
-router.post("/api/create", clientController.createNewUser); // Cadastrar novo usuário
-router.put("/api/update/paulo/cesar/:id", clientController.updateUser); // Atualizar o usuário
 router.post("/api/registerUser", clientController.register); // Cadastrar um novo usuário
 router.post("/api/validate", clientController.login); // Validar o login 
 router.post("/api/reset", clientController.getEmailReset); // Verificar o email de reset

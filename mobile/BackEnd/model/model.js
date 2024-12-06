@@ -1,6 +1,5 @@
 const connection = require("../config/db");
 const bcrypt = require("bcrypt");
-const jwt = require('jsonwebtoken');
 const salt = 10;
 
 const userModel = {
@@ -32,12 +31,6 @@ const userModel = {
     registerUser: async (id, nome, email, senha) => {
         const hashsenha = await bcrypt.hash(senha, salt);
         const [result] = await connection.query("INSERT INTO usuariosCadastrados values(?,?,?,?)", [id, nome, email, hashsenha])
-            .catch(erro => console.log(erro));
-        return result;
-    },
-    updateUser: async (id, email, senha) => {
-        const hashsenha = await bcrypt.hash(senha, salt); 
-        const [result] = await connection.query("UPDATE usuariosCadastrados SET email=?, senha=? WHERE id=?", [email, hashsenha, id])
             .catch(erro => console.log(erro));
         return result;
     },

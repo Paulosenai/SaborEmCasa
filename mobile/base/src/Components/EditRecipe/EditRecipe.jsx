@@ -20,7 +20,7 @@ const EditRecipe = ({ route, navigation }) => {
   const [nome, setNome] = useState(recipe.nome);
   const [ingredientes, setIngredientes] = useState(recipe.ingredientes);
   const [modoPreparo, setModoPreparo] = useState(recipe.modo_preparo);
-  const [imagem, setImagem] = useState(recipe.imagemReceita); 
+  const [imagem ] = useState(recipe.imagemReceita); 
   const [categoria, setCategoria] = useState(recipe.categoria);
   const [status, setStatus] = useState(recipe.privacidade || 'publico');
   const [isModalVisible, setIsModalVisible] = useState(false);
